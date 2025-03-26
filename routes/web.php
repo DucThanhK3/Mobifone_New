@@ -5,6 +5,7 @@ use App\Http\Controllers\SoDienThoaiController;
 
 
 
+
 Route::get('/', function () {
     return view('frontend.home');
 });
