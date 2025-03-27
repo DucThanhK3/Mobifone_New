@@ -40,14 +40,14 @@
         <p> Dashboard </p>
     </a>
 </li>
+<!-- Quản lý SIM -->
+<li class="nav-item">
+  <a href="{{ route('sims.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-sim-card"></i>
+    <p> Quản lý SIM </p>
+  </a>
+</li>
 
-        <!-- Quản lý SIM -->
-        <li class="nav-item">
-          <a href="sims.html" class="nav-link">
-            <i class="nav-icon fas fa-sim-card"></i>
-            <p> Quản lý SIM </p>
-          </a>
-        </li>
 
     <!-- Quản lý thuê bao -->
 <li class="nav-item">
