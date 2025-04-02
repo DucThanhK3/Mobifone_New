@@ -31,9 +31,9 @@
                         <div class="mb-3">
                             <label>TRẠNG THÁI</label>
                             <select name="status" class="form-control">
-                                <option value="active">HOẠT ĐỘNG</option>
-                                <option value="inactive">CHƯA KÍCH HOẠT</option>
-                                <option value="blocked">BỊ KHÓA</option>
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Chưa kích hoạt</option>
+                            <option value="locked">Bị khóa</option>
                             </select>
                         </div>
                     </div>

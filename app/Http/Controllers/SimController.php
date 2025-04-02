@@ -27,16 +27,24 @@ class SimController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate dữ liệu
         $validatedData = $request->validate([
             'phone_number' => 'required|unique:sims,phone_number|regex:/^0[0-9]{9}$/',
             'network_provider' => 'required|string|max:50',
-            'status' => 'required|in:active,inactive,blocked'
+            'status' => 'required|in:active,inactive,locked',  // Thêm "locked" vào các giá trị hợp lệ
         ]);
     
-        $sim = Sim::create($validatedData);
+        // Tạo mới SIM
+        $sim = Sim::create([
+            'phone_number' => $validatedData['phone_number'],
+            'network_provider' => $validatedData['network_provider'],
+            'status' => $validatedData['status'],
+        ]);
     
         return response()->json(['message' => 'SIM added successfully', 'sim' => $sim], 201);
     }
+    
+    
     
         
 

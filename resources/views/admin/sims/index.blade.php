@@ -75,16 +75,18 @@
                     <div class="mb-3">
                         <label class="form-label">Trạng Thái</label>
                         <select class="form-control" id="status" name="status">
-                            <option value="Đang sử dụng">active</option>
-                            <option value="Chưa kích hoạt">inactive</option>
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Chưa kích hoạt</option>
+                            <option value="locked">Bị khóa</option>
                         </select>
+
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="modalSua" tabindex="-1">
     <div class="modal-dialog">
@@ -107,10 +109,12 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Trạng Thái</label>
-                        <select class="form-control" id="status_sua" name="status">
-                            <option value="Đang sử dụng">active</option>
-                            <option value="Chưa kích hoạt">inactive</option>
+                        <select class="form-control" id="status" name="status">
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Chưa kích hoạt</option>
+                            <option value="locked">Bị khóa</option>
                         </select>
+
                     </div>
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </form>
@@ -133,8 +137,9 @@ $(document).ready(function () {
                 Swal.fire("Thành công!", "SIM đã được thêm.", "success");
                 location.reload();
             },
-            error: function () {
-                Swal.fire("Lỗi!", "Không thể thêm SIM.", "error");
+            error: function (xhr, status, error) {
+                // Xử lý lỗi chi tiết
+                Swal.fire("Lỗi!", "Không thể thêm SIM: " + xhr.responseText, "error");
             }
         });
     });
@@ -144,9 +149,10 @@ function moModalSua(id, phone_number, network_provider, status) {
     $('#id_sua').val(id);
     $('#phone_number_sua').val(phone_number);
     $('#network_provider_sua').val(network_provider);
-    $('#status_sua').val(status);
+    $('#status_sua').val(status);  // Đảm bảo status có giá trị đúng
     $('#modalSua').modal('show');
 }
+
 
 function xoaSim(id) {
     Swal.fire({
