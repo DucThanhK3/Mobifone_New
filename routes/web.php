@@ -24,6 +24,7 @@ Route::prefix('admin')->group(function () {
     Route::put('/so_dien_thoai/{id}', [SoDienThoaiController::class, 'update'])->name('so_dien_thoai.update');
 Route::delete('/so_dien_thoai/{id}', [SoDienThoaiController::class, 'destroy'])->name('so_dien_thoai.destroy');
     Route::resource('sims', SimController::class);
+    Route::put('/sims/{id}', [SimController::class, 'update'])->name('sims.update');
 
 
 });

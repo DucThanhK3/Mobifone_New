@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sim;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+
 
 class SimController extends Controller
 {
@@ -27,55 +27,37 @@ class SimController extends Controller
      */
     public function store(Request $request)
     {
-        // In ra dữ liệu nhận được để kiểm tra
-    dd($request->all()); 
         $validatedData = $request->validate([
             'phone_number' => 'required|unique:sims,phone_number|regex:/^0[0-9]{9}$/',
             'network_provider' => 'required|string|max:50',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive,blocked'
         ]);
-
-        try {
-            $sim = Sim::create($validatedData);
-            return response()->json([
-                'message' => 'Thêm SIM thành công!',
-                'sim' => $sim
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Lỗi khi thêm SIM: ' . $e->getMessage());
-            return response()->json(['message' => 'LỖI KHI THÊM SIM!'], 500);
-        }
+    
+        $sim = Sim::create($validatedData);
+    
+        return response()->json(['message' => 'SIM added successfully', 'sim' => $sim], 201);
     }
+    
+        
 
     /**
      * Xử lý cập nhật SIM (AJAX).
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'phone_number' => 'required|regex:/^0[0-9]{9}$/|unique:sims,phone_number,' . $id,
+        $sim = Sim::findOrFail($id);
+    
+        $validatedData = $request->validate([
+            'phone_number' => 'required|regex:/^0[0-9]{9}$/|unique:sims,phone_number,'.$id,
             'network_provider' => 'required|string|max:50',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive,blocked'
         ]);
-
-        try {
-            $sim = Sim::find($id);
-            if (!$sim) {
-                return response()->json(['message' => 'Không tìm thấy SIM!'], 404);
-            }
-
-            $sim->phone_number = $request->phone_number;
-            $sim->network_provider = $request->network_provider;
-            $sim->status = $request->status;
-            $sim->save();
-
-            return response()->json(['message' => 'Cập nhật SIM thành công!']);
-        } catch (\Exception $e) {
-            Log::error('Lỗi khi cập nhật SIM: ' . $e->getMessage());
-            return response()->json(['message' => 'LỖI KHI CẬP NHẬT SIM!'], 500);
-        }
+    
+        $sim->update($validatedData);
+    
+        return response()->json(['message' => 'SIM updated successfully', 'sim' => $sim]);
     }
-
+    
     /**
      * Xử lý xóa SIM (AJAX).
      */
