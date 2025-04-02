@@ -22,7 +22,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label>SỐ THUÊ BAO</label>
-                            <input type="text" name="phone_number" class="form-control" required>
+                            <input type="text" name="so_id" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label>NHÀ MẠNG</label>

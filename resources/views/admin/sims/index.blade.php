@@ -36,11 +36,11 @@
                 @foreach ($sims as $sim)
                 <tr id="sim_{{ $sim->id }}">
                     <td>{{ $sim->id }}</td>
-                    <td>{{ $sim->phone_number }}</td>
+                    <td>{{ $sim->so_id }}</td>
                     <td>{{ $sim->network_provider }}</td>
                     <td>{{ $sim->status }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" onclick="moModalSua({{ $sim->id }}, '{{ $sim->phone_number }}', '{{ $sim->network_provider }}', '{{ $sim->status }}')">
+                        <button class="btn btn-warning btn-sm" onclick="moModalSua({{ $sim->id }}, '{{ $sim->so_id }}', '{{ $sim->network_provider }}', '{{ $sim->status }}')">
                             <i class="fas fa-edit"></i> Sửa
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="xoaSim({{ $sim->id }})">
@@ -66,7 +66,7 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Số Thuê Bao</label>
-                        <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+                        <input type="text" class="form-control" id="so_id" name="so_id" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Nhà Mạng</label>
@@ -101,7 +101,7 @@
                     <input type="hidden" id="id_sua" name="id">
                     <div class="mb-3">
                         <label class="form-label">Số Thuê Bao</label>
-                        <input type="text" class="form-control" id="phone_number_sua" name="phone_number" required>
+                        <input type="text" class="form-control" id="so_id_sua" name="so_id" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Nhà Mạng</label>
@@ -145,9 +145,9 @@ $(document).ready(function () {
     });
 });
 
-function moModalSua(id, phone_number, network_provider, status) {
+function moModalSua(id, so_id, network_provider, status) {
     $('#id_sua').val(id);
-    $('#phone_number_sua').val(phone_number);
+    $('#so_id_sua').val(so_id);
     $('#network_provider_sua').val(network_provider);
     $('#status_sua').val(status);  // Đảm bảo status có giá trị đúng
     $('#modalSua').modal('show');

@@ -29,14 +29,14 @@ class SimController extends Controller
     {
         // Validate dữ liệu
         $validatedData = $request->validate([
-            'phone_number' => 'required|unique:sims,phone_number|regex:/^0[0-9]{9}$/',
+            'so_id' => 'required|unique:sims,so_id',
             'network_provider' => 'required|string|max:50',
             'status' => 'required|in:active,inactive,locked',  // Thêm "locked" vào các giá trị hợp lệ
         ]);
     
         // Tạo mới SIM
         $sim = Sim::create([
-            'phone_number' => $validatedData['phone_number'],
+            'so_id' => $validatedData['so_id'],
             'network_provider' => $validatedData['network_provider'],
             'status' => $validatedData['status'],
         ]);
