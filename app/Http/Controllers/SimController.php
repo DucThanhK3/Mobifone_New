@@ -29,14 +29,14 @@ class SimController extends Controller
     {
         // Validate dữ liệu
         $validatedData = $request->validate([
-            'so_id' => 'required|unique:sims,so_id',
+            'sodt' => 'required\|unique:sims,sodt',
             'network_provider' => 'required|string|max:50',
-            'status' => 'required|in:active,inactive,locked',  // Thêm "locked" vào các giá trị hợp lệ
+            'status' => 'required|in:active,inactive,blocked',  // Thêm "locked" vào các giá trị hợp lệ
         ]);
     
         // Tạo mới SIM
         $sim = Sim::create([
-            'so_id' => $validatedData['so_id'],
+            'sodt' => $validatedData['sodt'],
             'network_provider' => $validatedData['network_provider'],
             'status' => $validatedData['status'],
         ]);
@@ -51,28 +51,45 @@ class SimController extends Controller
     /**
      * Xử lý cập nhật SIM (AJAX).
      */
-    public function update(Request $request, $id)
-    {
-        $sim = Sim::findOrFail($id);
-    
-        $validatedData = $request->validate([
-            'phone_number' => 'required|regex:/^0[0-9]{9}$/|unique:sims,phone_number,'.$id,
-            'network_provider' => 'required|string|max:50',
-            'status' => 'required|in:active,inactive,blocked'
-        ]);
-    
-        $sim->update($validatedData);
-    
-        return response()->json(['message' => 'SIM updated successfully', 'sim' => $sim]);
+    public function update(Request $request, $so_id)
+{
+    \Log::info('Update SIM Request:', $request->all()); // Ghi log request
+
+    // Kiểm tra SIM có tồn tại không
+    $sim = Sim::where('so_id', $so_id)->first();
+    if (!$sim) {
+        \Log::error('SIM not found with so_id: ' . $so_id);
+        return response()->json(['message' => 'SIM not found'], 404);
     }
+
+    // Validate dữ liệu đầu vào
+    $validatedData = $request->validate([
+        'sodt' => 'required|unique:sims,sodt,' . $so_id . ',so_id',
+        'network_provider' => 'required|string|max:50',
+        'status' => 'required|in:active,inactive,blocked'
+    ]);
+
+    \Log::info('Validated Data:', $validatedData); // Ghi log dữ liệu đã kiểm tra
+
+    try {
+        $sim->update($validatedData);
+        \Log::info('SIM updated successfully', ['sim' => $sim]); // Log kết quả update
+
+        return response()->json(['message' => 'SIM updated successfully', 'sim' => $sim]);
+    } catch (\Exception $e) {
+        \Log::error('Error updating SIM:', ['error' => $e->getMessage()]);
+        return response()->json(['message' => 'Failed to update SIM', 'error' => $e->getMessage()], 500);
+    }
+}
+
     
     /**
      * Xử lý xóa SIM (AJAX).
      */
-    public function destroy($id)
+    public function destroy($so_id)
     {
         try {
-            $sim = Sim::findOrFail($id);
+            $sim = Sim::findOrFail($so_id);
             $sim->delete();
             return response()->json(['message' => 'Xóa SIM thành công!']);
         } catch (\Exception $e) {

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SoDienThoaiController;
 use App\Http\Controllers\SimController;
+use App\Http\Controllers\GoiCuocController;
 
 
 
@@ -24,10 +25,14 @@ Route::prefix('admin')->group(function () {
     Route::put('/so_dien_thoai/{id}', [SoDienThoaiController::class, 'update'])->name('so_dien_thoai.update');
 Route::delete('/so_dien_thoai/{id}', [SoDienThoaiController::class, 'destroy'])->name('so_dien_thoai.destroy');
     Route::resource('sims', SimController::class);
-
-
+    Route::put('/sims/{so_id}', [SimController::class, 'update'])->name('sims.update');
+    Route::resource('goi_cuoc', GoiCuocController::class);
 
 });
+
+
+
+
 
 
 
