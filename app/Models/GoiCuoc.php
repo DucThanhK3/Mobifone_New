@@ -12,5 +12,9 @@ class GoiCuoc extends Model
     protected $table = 'goi_cuoc';
 
     protected $fillable = ['ten_goi', 'gia', 'mo_ta'];
+    public function sims()
+    {
+        return $this->hasMany(Sim::class, 'goi_cuoc_id');
+    }
 }
 
