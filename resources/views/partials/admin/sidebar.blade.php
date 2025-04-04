@@ -40,6 +40,15 @@
         <p> Dashboard </p>
     </a>
 </li>
+
+    <!-- Quản lý thuê bao -->
+    <li class="nav-item">
+  <a href="{{ route('so_dien_thoai.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-users"></i>
+    <p> Quản lý số Thuê bao </p>
+  </a>
+</li>
+
 <!-- Quản lý SIM -->
 <li class="nav-item">
   <a href="{{ route('sims.index') }}" class="nav-link">
@@ -49,13 +58,7 @@
 </li>
 
 
-    <!-- Quản lý thuê bao -->
-<li class="nav-item">
-  <a href="{{ route('so_dien_thoai.index') }}" class="nav-link">
-    <i class="nav-icon fas fa-users"></i>
-    <p> Quản lý số Thuê bao </p>
-  </a>
-</li>
+
 
        <!-- Gói cước -->
 <li class="nav-item">

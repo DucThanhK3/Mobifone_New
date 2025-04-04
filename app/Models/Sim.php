@@ -16,9 +16,11 @@ class Sim extends Model
     public $incrementing = true; // Nếu so_id là số nguyên tự động tăng, còn không thì set false
     protected $keyType = 'int'; // Nếu so_id là số nguyên
 
-    protected $fillable = ['sodt', 'network_provider', 'status'];
+    protected $fillable = ['sodt', 'network_provider', 'status','loai_thue_bao'];
 
     public $timestamps = true; // Cần đồng bộ với Migration
+    
+
 }
 
 

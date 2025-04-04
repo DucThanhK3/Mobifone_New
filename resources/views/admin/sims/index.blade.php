@@ -27,7 +27,9 @@
                     <th>Số Thuê Bao</th>
                     <th>Nhà Mạng</th>
                     <th>Trạng Thái</th>
+                    <th> Loại thuê bao</th>
                     <th>Hành động</th>
+
                 </tr>
             </thead>
             <tbody id="danhSachSim">
@@ -37,6 +39,8 @@
                     <td>{{ $sim->sodt }}</td>
                     <td>{{ $sim->network_provider }}</td>
                     <td>{{ $sim->status }}</td>
+                    <td>{{ $sim->loai_thue_bao }}</td>
+
                     <td>
                         <button class="btn btn-warning btn-sm" onclick="moModalSua({{ $sim->so_id }}, '{{ $sim->sodt }}', '{{ $sim->network_provider }}', '{{ $sim->status }}')">
                             <i class="fas fa-edit"></i> Sửa
@@ -111,6 +115,16 @@
                             <option value="blocked">Bị khóa</option>
                         </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="loai_thue_bao">Loại Thuê Bao</label>
+                            <select name="loai_thue_bao" class="form-control" required>
+                                <option value="Tra Truoc">Trả Trước</option>
+                                <option value="Tra Sau">Trả Sau</option>
+                             </select>
+                    </div>
+
+
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </form>
             </div>
