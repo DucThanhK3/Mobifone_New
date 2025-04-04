@@ -4,7 +4,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Thư viện Alert đẹp -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { background-color: #f8f9fa; }
         .table-hover tbody tr:hover { background-color: #f1f3f5; }
@@ -42,10 +42,10 @@
                     <td>{{ $goiCuoc->gia }}</td>
                     <td>{{ $goiCuoc->mo_ta }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" onclick="moModalSua({{ $goiCuoc->id }}, '{{ $goiCuoc->ten_goi }}', '{{ $goiCuoc->gia }}', '{{ $goiCuoc->mo_ta }}')">
+                        <button class="btn btn-warning btn-sm btn-edit" data-id="{{ $goiCuoc->id }}" data-ten="{{ $goiCuoc->ten_goi }}" data-gia="{{ $goiCuoc->gia }}" data-mo_ta="{{ $goiCuoc->mo_ta }}">
                             <i class="fas fa-edit"></i> Sửa
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="xoaGoiCuoc({{ $goiCuoc->id }})">
+                        <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $goiCuoc->id }}">
                             <i class="fas fa-trash"></i> Xóa
                         </button>
                     </td>
@@ -119,9 +119,10 @@
 </div>
 
 <!-- JS: Xử lý thêm, sửa, xóa -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function () {
+
+    // Xử lý thêm gói cước
     $('#formThem').submit(function (event) {
         event.preventDefault(); // Ngăn chặn form gửi mặc định và tải lại trang
 
@@ -132,7 +133,6 @@ $(document).ready(function () {
             type: "POST",
             data: formData,
             success: function (response) {
-                // Hiển thị thông báo thành công
                 Swal.fire({
                     icon: 'success',
                     title: 'Thành công!',
@@ -140,20 +140,24 @@ $(document).ready(function () {
                     confirmButtonText: 'OK'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Cập nhật bảng ngay lập tức
-                        $('tbody').append(`
-                            <tr id="row_${response.goicuoc.id}">
+                        // Thêm gói cước vào bảng mà không cần tải lại trang
+                        let newRow = `
+                            <tr id="goi_cuoc_${response.goicuoc.id}">
                                 <td>${response.goicuoc.id}</td>
                                 <td>${response.goicuoc.ten_goi}</td>
                                 <td>${response.goicuoc.gia}</td>
                                 <td>${response.goicuoc.mo_ta}</td>
                                 <td>
-                                    <button class="btn btn-warning" onclick="moModalSua(${response.goicuoc.id}, '${response.goicuoc.ten_goi}', '${response.goicuoc.gia}', '${response.goicuoc.mo_ta}')">Sửa</button>
-                                    <button class="btn btn-danger" onclick="xoaGoiCuoc(${response.goicuoc.id})">Xóa</button>
+                                    <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </button>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="${response.goicuoc.id}">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
                                 </td>
-                            </tr>
-                        `);
-                        $('#modalThem').modal('hide'); // Đóng modal sau khi thêm thành công
+                            </tr>`;
+                        $('#danhSachGoiCuoc').append(newRow); // Thêm dòng vào bảng
+                        $('#modalThem').modal('hide'); // Đóng modal sau khi thêm
                         $('#formThem')[0].reset(); // Xóa dữ liệu trong form
                     }
                 });
@@ -162,36 +166,95 @@ $(document).ready(function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Lỗi!',
-                    text: 'Không thể thêm gói cước!',
+                    text: xhr.responseJSON.message || 'Không thể thêm gói cước!',
                 });
             }
         });
     });
+
+    // Xử lý sửa gói cước
+    $('#formSua').submit(function (event) {
+        event.preventDefault(); // Ngăn chặn form gửi mặc định và tải lại trang
+
+        let formData = $(this).serialize() + "&_method=PUT";
+
+        $.ajax({
+            url: "/admin/goi_cuoc/" + $('#id_sua').val(),
+            type: "POST",
+            data: formData,
+            success: function (response) {
+                Swal.fire("Cập nhật thành công!", response.message, "success");
+                $('#modalSua').modal('hide');
+                // Cập nhật thông tin gói cước trong bảng
+                let updatedRow = `
+                    <td>${response.goicuoc.id}</td>
+                    <td>${response.goicuoc.ten_goi}</td>
+                    <td>${response.goicuoc.gia}</td>
+                    <td>${response.goicuoc.mo_ta}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}">
+                            <i class="fas fa-edit"></i> Sửa
+                        </button>
+                        <button class="btn btn-danger btn-sm btn-delete" data-id="${response.goicuoc.id}">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </td>`;
+                $('#goi_cuoc_' + response.goicuoc.id).html(updatedRow); // Cập nhật dòng trong bảng
+                $('#formSua')[0].reset(); // Xóa dữ liệu trong form
+            },
+            error: function (xhr) {
+                Swal.fire("Lỗi!", xhr.responseJSON.message || "Không thể cập nhật gói cước!", "error");
+            }
+        });
+    });
+
+    // Xử lý xóa gói cước
+    $(document).on('click', '.btn-delete', function () {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: "Bạn có chắc chắn muốn xóa?",
+            text: "Hành động này không thể hoàn tác!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Hủy"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/admin/goi_cuoc/" + id,
+                    type: "POST",
+                    data: {
+                        _method: "DELETE",
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function (response) {
+                        Swal.fire("Đã xóa!", response.message, "success");
+                        $("#goi_cuoc_" + id).remove(); // Xóa dòng trong bảng
+                    },
+                    error: function () {
+                        Swal.fire("Lỗi!", "Không thể xóa gói cước!", "error");
+                    }
+                });
+            }
+        });
+    });
+
+    // Mở modal sửa
+    $(document).on('click', '.btn-edit', function () {
+        var id = $(this).data('id');
+        var ten = $(this).data('ten');
+        var gia = $(this).data('gia');
+        var mo_ta = $(this).data('mo_ta');
+
+        $('#id_sua').val(id);
+        $('#ten_goi_sua').val(ten);
+        $('#gia_sua').val(gia);
+        $('#mo_ta_sua').val(mo_ta);
+        $('#modalSua').modal('show');
+    });
+
 });
-$('#formSua').submit(function (event) {
-    event.preventDefault();
-
-    let id = $('#id_sua').val();
-    let tenGoi = $('#ten_goi_sua').val();
-    let gia = $('#gia_sua').val();
-    let moTa = $('#mo_ta_sua').val();
-
-    if (!tenGoi || tenGoi.trim() === "") {
-        Swal.fire("Lỗi!", "Tên gói cước không được để trống!", "error");
-        return;
-    }
-
-    let formData = $(this).serialize() + "&_method=PUT";
-
-    $.ajax({
-        url: "/admin/goi_cuoc/" + id,
-        type: "POST",
-        data: formData,
-        success: function (response) {
-            Swal.fire("Cập nhật thành công!", response.message, "success");
-            $('#modalSua').modal('hide');
-            location.reload();
-        },
-        error: function (xhr) {
-            console.log("❌ Lỗi cập nhật:", xhr.responseText);
-            Swal.fire("Lỗi!", "Không thể cập nhật gói cước!", "error");
+</script>
+@endsection

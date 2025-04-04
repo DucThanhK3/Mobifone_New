@@ -20,17 +20,17 @@ class GoiCuocController extends Controller
         $validatedData = $request->validate([
             'ten_goi' => 'required|unique:goi_cuoc,ten_goi',
             'gia' => 'required|numeric',
-            'mo_ta' => 'nullable|string',
-            
+            'mo_ta' => 'nullable|string'
         ]);
-
+    
         $goiCuoc = GoiCuoc::create($validatedData);
-
+    
         return response()->json([
             'message' => 'Thêm gói cước thành công!',
             'goi_cuoc' => $goiCuoc
         ]);
     }
+    
 
     // Xử lý cập nhật gói cước (AJAX)
     public function update(Request $request, $id)
@@ -40,26 +40,26 @@ class GoiCuocController extends Controller
             'gia' => 'required|numeric',
             'mo_ta' => 'nullable|string',
         ]);
-
+    
         $goiCuoc = GoiCuoc::find($id);
         if (!$goiCuoc) {
             return response()->json(['message' => 'Không tìm thấy gói cước!'], 404);
         }
-
+    
         $goiCuoc->ten_goi = $request->ten_goi;
         $goiCuoc->gia = $request->gia;
         $goiCuoc->mo_ta = $request->mo_ta;
         $goiCuoc->save();
-
+    
         return response()->json(['message' => 'Cập nhật gói cước thành công!']);
     }
-
-    // Xử lý xóa gói cước (AJAX)
+    
     public function destroy($id)
-    {
-        $goiCuoc = GoiCuoc::findOrFail($id);
-        $goiCuoc->delete();
+{
+    $goiCuoc = GoiCuoc::findOrFail($id);
+    $goiCuoc->delete();
 
-        return response()->json(['message' => 'Xóa gói cước thành công!']);
-    }
+    return response()->json(['message' => 'Xóa gói cước thành công!']);
+}
+
 }
