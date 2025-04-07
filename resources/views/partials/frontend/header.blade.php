@@ -11,7 +11,7 @@
       <ul>
         <li><a href="index.html" class="active">Trang chủ</a></li>
         <li><a href="about.html">Giới thiệu</a></li>
-        <li><a href="services.html">Dịch vụ</a></li>
+        <li><a href="{{ url('/customer/dichvu') }}">Dịch vụ</a></li>
         <li><a href="portfolio.html">Gói cước</a></li>
         <li><a href="team.html">Đội ngũ</a></li>
         <li><a href="blog.html">Tin tức</a></li>

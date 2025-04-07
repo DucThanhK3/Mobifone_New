@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SoDienThoaiController;
 use App\Http\Controllers\SimController;
 use App\Http\Controllers\GoiCuocController;
+use App\Http\Controllers\DichVuController;
 
 
 
@@ -11,7 +12,7 @@ use App\Http\Controllers\GoiCuocController;
 Route::get('/', function () {
     return view('frontend.home');
 });
-
+Route::get('/customer/dichvu', [DichVuController::class, 'index'])->name('customer.dichvu');
 
 
 
@@ -29,6 +30,9 @@ Route::delete('/so_dien_thoai/{id}', [SoDienThoaiController::class, 'destroy'])-
     Route::resource('goi_cuoc', GoiCuocController::class);
 
 });
+
+
+
 
 
 
