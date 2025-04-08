@@ -12,7 +12,7 @@ use App\Http\Controllers\DichVuController;
 Route::get('/', function () {
     return view('frontend.home');
 });
-Route::get('/customer/dichvu', [DichVuController::class, 'index'])->name('customer.dichvu');
+
 
 
 
