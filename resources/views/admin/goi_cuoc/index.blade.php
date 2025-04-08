@@ -31,6 +31,7 @@
                     <th>Tên Gói</th>
                     <th>Giá</th>
                     <th>Mô Tả</th>
+                    <th>Cú pháp ĐK</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -41,6 +42,8 @@
                     <td>{{ $goiCuoc->ten_goi }}</td>
                     <td>{{ $goiCuoc->gia }}</td>
                     <td>{{ $goiCuoc->mo_ta }}</td>
+                    <td>{{ $goiCuoc->cu_phap_dang_ky }}</td>
+
                     <td>
                         <button class="btn btn-warning btn-sm btn-edit" data-id="{{ $goiCuoc->id }}" data-ten="{{ $goiCuoc->ten_goi }}" data-gia="{{ $goiCuoc->gia }}" data-mo_ta="{{ $goiCuoc->mo_ta }}">
                             <i class="fas fa-edit"></i> Sửa
@@ -79,6 +82,11 @@
                         <label class="form-label">Mô Tả</label>
                         <textarea class="form-control" id="mo_ta" name="mo_ta"></textarea>
                     </div>
+                    <div class="mb-3">
+                         <label for="cu_phap_dang_ky" class="form-label">Cú pháp đăng ký</label>
+                        <input type="text" class="form-control" id="cu_phap_dang_ky" name="cu_phap_dang_ky">
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Lưu</button>
                 </form>
             </div>
@@ -111,6 +119,11 @@
                         <label class="form-label">Mô Tả</label>
                         <textarea class="form-control" id="mo_ta_sua" name="mo_ta"></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="cu_phap_dang_ky" class="form-label">Cú pháp đăng ký</label>
+                        <input type="text" class="form-control" id="cu_phap_dang_ky" name="cu_phap_dang_ky">
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                 </form>
             </div>
@@ -147,6 +160,8 @@ $(document).ready(function () {
                                 <td>${response.goicuoc.ten_goi}</td>
                                 <td>${response.goicuoc.gia}</td>
                                 <td>${response.goicuoc.mo_ta}</td>
+                                <td>${response.goicuoc.cu_phap_dang_ky}</td>
+
                                 <td>
                                     <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}">
                                         <i class="fas fa-edit"></i> Sửa
@@ -191,6 +206,8 @@ $(document).ready(function () {
                     <td>${response.goicuoc.ten_goi}</td>
                     <td>${response.goicuoc.gia}</td>
                     <td>${response.goicuoc.mo_ta}</td>
+                    <td>${response.goicuoc.cu_phap_dang_ky}</td>
+
                     <td>
                         <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}">
                             <i class="fas fa-edit"></i> Sửa
@@ -247,11 +264,13 @@ $(document).ready(function () {
         var ten = $(this).data('ten');
         var gia = $(this).data('gia');
         var mo_ta = $(this).data('mo_ta');
+        var cu_phap_dang_ky = $(this).data('cu_phap_dang_ky');
 
         $('#id_sua').val(id);
-        $('#ten_goi_sua').val(ten);
+        $('#ten_goi_sua').val(ten); 
         $('#gia_sua').val(gia);
         $('#mo_ta_sua').val(mo_ta);
+        $('#cu_phap_dang_ky_sua').val(cu_phap_dang_ky);
         $('#modalSua').modal('show');
     });
 

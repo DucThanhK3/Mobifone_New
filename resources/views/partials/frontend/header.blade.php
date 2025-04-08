@@ -1,7 +1,7 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
-    <a href="index.html" class="logo d-flex align-items-center">
+    <a href="{{ url('/') }}" class="logo d-flex align-items-center">
       <!-- Bỏ dấu chú thích dòng dưới nếu bạn muốn sử dụng logo hình ảnh -->
       <!-- <img src="assets/img/logo.png" alt=""> -->
       <h1 class="sitename">Mobifone</h1>
@@ -9,10 +9,16 @@
 
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="index.html" class="active">Trang chủ</a></li>
+        <li><a href="{{ url('/') }}" class="active">Trang chủ</a></li>
         <li><a href="about.html">Giới thiệu</a></li>
         <li><a href="{{ url('/customer/dichvu') }}">Dịch vụ</a></li>
-        <li><a href="portfolio.html">Gói cước</a></li>
+        <li class="dropdown">
+          <a href="#"><span>Gói cước</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            <li><a href="{{ url('/goi_cuoc') }}">Danh sách gói cước</a></li>
+            
+          </ul>
+        </li>
         <li><a href="team.html">Đội ngũ</a></li>
         <li><a href="blog.html">Tin tức</a></li>
         <li class="dropdown">
