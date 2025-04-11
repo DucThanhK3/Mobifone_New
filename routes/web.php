@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SoDienThoaiController;
-use App\Http\Controllers\SimController;
-use App\Http\Controllers\GoiCuocController;
+use App\Http\Controllers\Admin\SoDienThoaiController;
+
+use App\Http\Controllers\Admin\SimController;
+use App\Http\Controllers\Admin\GoiCuocController;
+use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\DichVuController;
 use App\Http\Controllers\Frontend\GoiCuocController as FrontendGoiCuocController; 
 use App\Http\Controllers\Frontend\DangKyGoiCuocController;
@@ -36,6 +38,22 @@ Route::prefix('admin')->group(function () {
     Route::resource('sims', SimController::class);
     Route::put('/sims/{so_id}', [SimController::class, 'update'])->name('sims.update');
     Route::resource('goi_cuoc', GoiCuocController::class);
+
+    Route::resource('tintuc', TinTucController::class);
+    // Thêm mới tin tức
+Route::post('/admin/tintuc', [TinTucController::class, 'store'])->name('admin.tintuc.store');
+
+
+// Sửa tin tức
+Route::put('/admin/tintuc/{id}', [TinTucController::class, 'update'])->name('admin.tintuc.update');
+
+// Xóa tin tức
+Route::delete('/tintuc/{id}', [TinTucController::class, 'destroy'])->name('admin.tintuc.destroy');
+
+
+    
+
+    
 });
 
 

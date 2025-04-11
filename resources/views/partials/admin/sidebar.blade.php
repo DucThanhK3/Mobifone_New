@@ -68,6 +68,16 @@
   </a>
 </li>
 
+ <!-- Tin Tức -->
+<li class="nav-item">
+<a href="{{ route('tintuc.index') }}"class="nav-link">
+
+    <i class="nav-icon fas fa-newspaper"></i>
+    <p> Tin Tức</p>
+  </a>
+</li>
+
+
 
         <!-- Giao dịch -->
         <li class="nav-item">
