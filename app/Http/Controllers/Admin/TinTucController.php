@@ -18,7 +18,7 @@ class TinTucController extends Controller
     // Thêm tin tức
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'tieu_de' => 'required|string|max:255',
             'hinh_anh' => 'nullable|image',
             'noi_dung' => 'required',
@@ -37,28 +37,27 @@ class TinTucController extends Controller
         return response()->json(['tinTuc' => $tinTuc], 200);
     }
 
-    // Sửa tin tức
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'tieu_de' => 'required|string|max:255',
-            'hinh_anh' => 'nullable|image',
-            'noi_dung' => 'required',
-        ]);
-
         $tinTuc = TinTuc::findOrFail($id);
-        $data = $request->only('tieu_de', 'noi_dung');
-
+        $tinTuc->tieu_de = $request->tieu_de;
+        $tinTuc->noi_dung = $request->noi_dung;
+    
         if ($request->hasFile('hinh_anh')) {
             $file = $request->file('hinh_anh');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('assets/images'), $filename);
-            $data['hinh_anh'] = $filename;
+            $tinTuc->hinh_anh = $filename;
         }
-
-        $tinTuc->update($data);  // Cập nhật tin tức
-        return response()->json(['tinTuc' => $tinTuc], 200);
+    
+        $tinTuc->save();
+    
+        return response()->json([
+            'message' => 'Cập nhật thành công',
+            'tinTuc' => $tinTuc
+        ]);
     }
+    
 
     // Xóa tin tức
     public function destroy($id)

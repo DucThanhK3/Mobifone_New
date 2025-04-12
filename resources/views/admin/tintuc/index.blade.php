@@ -11,6 +11,8 @@
         .btn-gradient { background: linear-gradient(to right, #4facfe, #00f2fe); color: white; border: none; }
         .btn-gradient:hover { background: linear-gradient(to right, #00f2fe, #4facfe); }
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 
 @section('content')
@@ -30,6 +32,7 @@
                     <th>ID</th>
                     <th>Tiêu Đề</th>
                     <th>Hình Ảnh</th>
+                    <th>Nội Dung</th>
                     <th>Ngày Tạo</th>
                     <th>Hành động</th>
                 </tr>
@@ -44,7 +47,15 @@
                         <img src="{{ asset('assets/images/' . $tinTuc->hinh_anh) }}" width="100" alt="Image">
                         @endif
                     </td>
-                    <td>{{ $tinTuc->created_at->format('d/m/Y') }}</td>
+                    <td>{{ $tinTuc->noi_dung }}</td> <!-- Thêm cột Nội Dung -->
+                    <td>
+                        @if($tinTuc->created_at)
+                            {{ $tinTuc->created_at->format('d/m/Y') }}
+                        @else
+                            N/A
+                        @endif
+                    </td>
+
                     <td>
                         <button class="btn btn-warning btn-sm" onclick="moModalSua({{ $tinTuc->id }}, '{{ $tinTuc->tieu_de }}', '{{ $tinTuc->noi_dung }}', '{{ $tinTuc->hinh_anh }}')">
                             <i class="fas fa-edit"></i> Sửa
@@ -101,6 +112,7 @@
             <div class="modal-body">
                 <form id="formSuaTinTuc" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="_method" value="PUT"> <!-- Giả lập PUT -->
                     <input type="hidden" id="id_sua" name="id">
 
                     <div class="mb-3">
@@ -122,8 +134,8 @@
     </div>
 </div>
 
+
 <script>
-    
     // Xử lý thêm tin tức
     $('#formThemTinTuc').submit(function(event) {
         event.preventDefault();
@@ -145,6 +157,7 @@
                         <td>${response.tinTuc.id}</td>
                         <td>${response.tinTuc.tieu_de}</td>
                         <td><img src="{{ asset('assets/images/') }}/${response.tinTuc.hinh_anh}" width="100" alt="Image"></td>
+                        <td>${response.tinTuc.noi_dung}</td> <!-- Cột Nội Dung -->
                         <td>${response.tinTuc.created_at}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="moModalSua(${response.tinTuc.id}, '${response.tinTuc.tieu_de}', '${response.tinTuc.noi_dung}', '${response.tinTuc.hinh_anh}')">
@@ -163,38 +176,45 @@
         });
     });
 
-    // Xử lý sửa tin tức
-    function moModalSua(id, tieu_de, noi_dung, hinh_anh) {
-        $('#modalSuaTinTuc #id_sua').val(id);
-        $('#modalSuaTinTuc #tieu_de_sua').val(tieu_de);
-        $('#modalSuaTinTuc #noi_dung_sua').val(noi_dung);
-        $('#modalSuaTinTuc').modal('show');
-    }
+    // Mở modal sửa và đổ dữ liệu vào form
+function moModalSua(id, tieu_de, noi_dung, hinh_anh) {
+    $('#modalSuaTinTuc #id_sua').val(id);
+    $('#modalSuaTinTuc #tieu_de_sua').val(tieu_de);
+    $('#modalSuaTinTuc #noi_dung_sua').val(noi_dung);
+    $('#modalSuaTinTuc').modal('show');
+}
 
-    $('#formSuaTinTuc').submit(function(event) {
-        event.preventDefault();
+// Xử lý submit sửa
+$('#formSuaTinTuc').submit(function(event) {
+    event.preventDefault();
 
-        let id = $('#id_sua').val();
-        let formData = new FormData(this);
+    let id = $('#id_sua').val();
+    let formData = new FormData(this);
 
-        $.ajax({
-            url: "/admin/tintuc/" + id,
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                Swal.fire("Cập nhật thành công!", "Tin tức đã được cập nhật!", "success");
-                $('#modalSuaTinTuc').modal('hide');
-                $(`#tinTuc_${id}`).find('td').eq(1).text(response.tinTuc.tieu_de);
-                $(`#tinTuc_${id}`).find('td').eq(2).html('<img src="{{ asset('assets/images/') }}/' + response.tinTuc.hinh_anh + '" width="100" alt="Image">');
-                $(`#tinTuc_${id}`).find('td').eq(3).text(response.tinTuc.created_at);
-            },
-            error: function(xhr) {
-                Swal.fire("Lỗi!", "Không thể cập nhật tin tức!", "error");
-            }
-        });
+    formData.append('_method', 'PUT'); // Laravel expects this for PUT
+
+    $.ajax({
+        url: '/admin/tintuc/' + id,
+        type: 'POST', // Dù là PUT, vẫn gửi POST kèm _method
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            Swal.fire("Cập nhật thành công!", "Tin tức đã được cập nhật!", "success");
+            $('#modalSuaTinTuc').modal('hide');
+
+            // Cập nhật lại UI bảng
+            let row = $('#tinTuc_' + id);
+            row.find('td:eq(1)').text(response.tinTuc.tieu_de);
+            row.find('td:eq(2)').html('<img src="{{ asset("assets/images/") }}/' + response.tinTuc.hinh_anh + '" width="100" alt="Image">');
+            row.find('td:eq(3)').text(response.tinTuc.noi_dung);
+        },
+        error: function(xhr) {
+            Swal.fire("Lỗi!", "Không thể cập nhật tin tức!", "error");
+        }
     });
+});
+
 
     // Xử lý xóa tin tức
     function xoaTinTuc(id) {
@@ -208,6 +228,7 @@
                 $.ajax({
                     url: '/admin/tintuc/' + id,
                     type: 'DELETE',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     success: function(response) {
                         Swal.fire('Xóa thành công!', 'Tin tức đã được xóa.', 'success');
                         $('#tinTuc_' + id).remove();

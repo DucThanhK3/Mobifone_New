@@ -1,82 +1,69 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
-use App\Models\TinTuc;  // Đảm bảo đây là dòng use ở đầu file
+use App\Models\SoDienThoai;
 use Illuminate\Http\Request;
 
-class TinTucController extends Controller
+class SoDienThoaiController extends Controller
 {
-    /**
-     * Hiển thị danh sách tin tức.
-     */
+    // Hiển thị danh sách số điện thoại
     public function index()
     {
-        $tinTucs = TinTuc::latest()->get();  // Lấy các tin tức mới nhất
-        return view('admin.tintuc.index', compact('tinTucs'));  // Trả về view với dữ liệu
+        $soDienThoai = SoDienThoai::all();
+        return view('admin.so_dien_thoai.index', compact('soDienThoai'));
     }
 
-    /**
-     * Lưu tin tức mới.
-     */
-    public function store(Request $request)
-    {
-        // Validate dữ liệu
-        $request->validate([
-            'tieu_de' => 'required|string|max:255',
-            'hinh_anh' => 'nullable|image',
-            'noi_dung' => 'required',
-        ]);
-    
-        // Lấy dữ liệu từ request
-        $data = $request->only('tieu_de', 'noi_dung');
-    
-        // Xử lý nếu có file ảnh
-        if ($request->hasFile('hinh_anh')) {
-            $file = $request->file('hinh_anh');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('assets/images'), $filename);
-            $data['hinh_anh'] = $filename;
-        }
-    
-        // Tạo mới tin tức
-        TinTuc::create($data);
-    
-        // Quay lại trang trước với thông báo thành công
-        return redirect()->back()->with('success', 'Thêm tin tức thành công!');
+ // Xử lý thêm số điện thoại (AJAX)
+public function store(Request $request)
+{
+    $validatedData = $request->validate([
+        'so' => 'required|unique:so_dien_thoai,so',
+        'chu_so_huu' => 'nullable|string',
+    ]);
+
+    // Nếu không nhập chủ sở hữu, mặc định là "Chưa có ai sở hữu"
+    if (!$request->chu_so_huu) {
+        $validatedData['chu_so_huu'] = "Chưa có ai sở hữu";
     }
 
-    /**
-     * Cập nhật tin tức.
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'tieu_de' => 'required|string|max:255',
-            'noi_dung' => 'required',
-        ]);
+    $soDienThoai = SoDienThoai::create($validatedData);
 
-        // Tìm tin tức theo ID
-        $tinTuc = TinTuc::find($id);
-        if (!$tinTuc) {
-            return response()->json(['message' => 'Không tìm thấy tin tức!'], 404);
-        }
+    return response()->json([
+        'message' => 'Thêm số điện thoại thành công!',
+        'so' => $soDienThoai
+    ]);
+}
 
-        // Cập nhật tin tức
-        $tinTuc->update($request->only('tieu_de', 'noi_dung'));
+// Xử lý cập nhật số điện thoại (AJAX)
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'so' => 'required|string',
+        'chu_so_huu' => 'nullable|string',
+    ]);
 
-        return response()->json(['message' => 'Cập nhật tin tức thành công!']);
+    $soDienThoai = SoDienThoai::find($id);
+    if (!$soDienThoai) {
+        return response()->json(['message' => 'Không tìm thấy số điện thoại!'], 404);
     }
 
-    /**
-     * Xóa tin tức.
-     */
-    public function destroy($id)
-    {
-        $tinTuc = TinTuc::findOrFail($id);
-        $tinTuc->delete();
+    $soDienThoai->so = $request->so;
+    $soDienThoai->chu_so_huu = $request->chu_so_huu;
+    $soDienThoai->save();
 
-        return response()->json(['message' => 'Xóa tin tức thành công!']);
-    }
+    return response()->json(['message' => 'Cập nhật thành công!']);
+}
+
+
+
+// Xử lý xóa số điện thoại (AJAX)
+public function destroy($id)
+{
+    $soDienThoai = SoDienThoai::findOrFail($id);
+    $soDienThoai->delete();
+
+    return response()->json(['message' => 'Xóa số điện thoại thành công!']);
+}
+
 }

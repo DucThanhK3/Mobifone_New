@@ -10,4 +10,5 @@ class TinTuc extends Model
     use HasFactory;
 
     protected $fillable = ['tieu_de', 'hinh_anh', 'noi_dung'];  // Các trường có thể điền vào
+    public $timestamps = true;  // Đảm bảo là true
 }

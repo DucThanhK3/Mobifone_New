@@ -47,6 +47,7 @@ Route::post('/admin/tintuc', [TinTucController::class, 'store'])->name('admin.ti
 // Sửa tin tức
 Route::put('/admin/tintuc/{id}', [TinTucController::class, 'update'])->name('admin.tintuc.update');
 
+
 // Xóa tin tức
 Route::delete('/tintuc/{id}', [TinTucController::class, 'destroy'])->name('admin.tintuc.destroy');
 
