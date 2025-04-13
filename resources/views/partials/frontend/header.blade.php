@@ -20,7 +20,9 @@
           </ul>
         </li>
         <li><a href="team.html">Đội ngũ</a></li>
-        <li><a href="blog.html">Tin tức</a></li>
+        <li><a href="{{ route('frontend.tin_tuc.index') }}">Tin tức</a></li>
+
+
         <li class="dropdown">
           <a href="#"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>

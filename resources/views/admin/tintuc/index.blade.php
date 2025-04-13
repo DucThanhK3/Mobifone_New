@@ -1,30 +1,30 @@
 @extends('layouts.admin')
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> <!-- Font Awesome -->
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Thư viện Alert đẹp -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body { background-color: #f8f9fa; }
         .table-hover tbody tr:hover { background-color: #f1f3f5; }
         .btn-gradient { background: linear-gradient(to right, #4facfe, #00f2fe); color: white; border: none; }
         .btn-gradient:hover { background: linear-gradient(to right, #00f2fe, #4facfe); }
     </style>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
 </head>
 
 @section('content')
 <div class="container mt-4">
     <h2 class="text-center mb-4">Quản lý Tin Tức</h2>
 
-    <!-- Nút thêm tin tức -->
     <button class="btn btn-gradient mb-3" data-bs-toggle="modal" data-bs-target="#modalThemTinTuc">
         <i class="fas fa-plus"></i> Thêm Tin Tức
     </button>
 
-    <!-- Bảng danh sách tin tức -->
     <div class="table-responsive">
         <table class="table table-hover">
             <thead class="table-dark">
@@ -47,7 +47,7 @@
                         <img src="{{ asset('assets/images/' . $tinTuc->hinh_anh) }}" width="100" alt="Image">
                         @endif
                     </td>
-                    <td>{{ $tinTuc->noi_dung }}</td> <!-- Thêm cột Nội Dung -->
+                    <td>{{ $tinTuc->noi_dung }}</td>
                     <td>
                         @if($tinTuc->created_at)
                             {{ $tinTuc->created_at->format('d/m/Y') }}
@@ -55,9 +55,9 @@
                             N/A
                         @endif
                     </td>
-
                     <td>
-                        <button class="btn btn-warning btn-sm" onclick="moModalSua({{ $tinTuc->id }}, '{{ $tinTuc->tieu_de }}', '{{ $tinTuc->noi_dung }}', '{{ $tinTuc->hinh_anh }}')">
+                        <button class="btn btn-warning btn-sm"
+                            onclick='moModalSua(@json($tinTuc->id), @json($tinTuc->tieu_de), @json($tinTuc->noi_dung), @json($tinTuc->hinh_anh))'>
                             <i class="fas fa-edit"></i> Sửa
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="xoaTinTuc({{ $tinTuc->id }})">
@@ -71,7 +71,7 @@
     </div>
 </div>
 
-<!-- Modal Thêm Tin Tức -->
+<!-- Modal Thêm -->
 <div class="modal fade" id="modalThemTinTuc" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -101,7 +101,7 @@
     </div>
 </div>
 
-<!-- Modal Sửa Tin Tức -->
+<!-- Modal Sửa -->
 <div class="modal fade" id="modalSuaTinTuc" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -112,9 +112,8 @@
             <div class="modal-body">
                 <form id="formSuaTinTuc" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="_method" value="PUT"> <!-- Giả lập PUT -->
+                    <input type="hidden" name="_method" value="PUT">
                     <input type="hidden" id="id_sua" name="id">
-
                     <div class="mb-3">
                         <label class="form-label">Tiêu Đề</label>
                         <input type="text" class="form-control" id="tieu_de_sua" name="tieu_de" required>
@@ -134,14 +133,20 @@
     </div>
 </div>
 
-
 <script>
-    // Xử lý thêm tin tức
+    // Mở modal sửa và gán dữ liệu
+    function moModalSua(id, tieu_de, noi_dung, hinh_anh) {
+        $('#id_sua').val(id);
+        $('#tieu_de_sua').val(tieu_de);
+        $('#noi_dung_sua').val(noi_dung);
+        $('#modalSuaTinTuc').modal('show');
+    }
+
+    // Thêm tin tức
     $('#formThemTinTuc').submit(function(event) {
         event.preventDefault();
-        
         let formData = new FormData(this);
-        
+
         $.ajax({
             url: "{{ route('admin.tintuc.store') }}",
             type: "POST",
@@ -152,15 +157,17 @@
                 Swal.fire("Thành công!", "Tin tức đã được thêm!", "success");
                 $('#modalThemTinTuc').modal('hide');
                 $('#formThemTinTuc')[0].reset();
+
                 $('tbody').append(`
                     <tr id="tinTuc_${response.tinTuc.id}">
                         <td>${response.tinTuc.id}</td>
                         <td>${response.tinTuc.tieu_de}</td>
-                        <td><img src="{{ asset('assets/images/') }}/${response.tinTuc.hinh_anh}" width="100" alt="Image"></td>
-                        <td>${response.tinTuc.noi_dung}</td> <!-- Cột Nội Dung -->
+                        <td><img src="{{ asset('assets/images') }}/${response.tinTuc.hinh_anh}" width="100" alt="Image"></td>
+                        <td>${response.tinTuc.noi_dung}</td>
                         <td>${response.tinTuc.created_at}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick="moModalSua(${response.tinTuc.id}, '${response.tinTuc.tieu_de}', '${response.tinTuc.noi_dung}', '${response.tinTuc.hinh_anh}')">
+                            <button class="btn btn-warning btn-sm"
+                                onclick='moModalSua(${response.tinTuc.id}, ${JSON.stringify(response.tinTuc.tieu_de)}, ${JSON.stringify(response.tinTuc.noi_dung)}, ${JSON.stringify(response.tinTuc.hinh_anh)})'>
                                 <i class="fas fa-edit"></i> Sửa
                             </button>
                             <button class="btn btn-danger btn-sm" onclick="xoaTinTuc(${response.tinTuc.id})">
@@ -176,47 +183,36 @@
         });
     });
 
-    // Mở modal sửa và đổ dữ liệu vào form
-function moModalSua(id, tieu_de, noi_dung, hinh_anh) {
-    $('#modalSuaTinTuc #id_sua').val(id);
-    $('#modalSuaTinTuc #tieu_de_sua').val(tieu_de);
-    $('#modalSuaTinTuc #noi_dung_sua').val(noi_dung);
-    $('#modalSuaTinTuc').modal('show');
-}
+    // Sửa tin tức
+    $('#formSuaTinTuc').submit(function(event) {
+        event.preventDefault();
 
-// Xử lý submit sửa
-$('#formSuaTinTuc').submit(function(event) {
-    event.preventDefault();
+        let id = $('#id_sua').val();
+        let formData = new FormData(this);
+        formData.append('_method', 'PUT');
 
-    let id = $('#id_sua').val();
-    let formData = new FormData(this);
+        $.ajax({
+            url: '/admin/tintuc/' + id,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                Swal.fire("Cập nhật thành công!", "Tin tức đã được cập nhật!", "success");
+                $('#modalSuaTinTuc').modal('hide');
 
-    formData.append('_method', 'PUT'); // Laravel expects this for PUT
-
-    $.ajax({
-        url: '/admin/tintuc/' + id,
-        type: 'POST', // Dù là PUT, vẫn gửi POST kèm _method
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            Swal.fire("Cập nhật thành công!", "Tin tức đã được cập nhật!", "success");
-            $('#modalSuaTinTuc').modal('hide');
-
-            // Cập nhật lại UI bảng
-            let row = $('#tinTuc_' + id);
-            row.find('td:eq(1)').text(response.tinTuc.tieu_de);
-            row.find('td:eq(2)').html('<img src="{{ asset("assets/images/") }}/' + response.tinTuc.hinh_anh + '" width="100" alt="Image">');
-            row.find('td:eq(3)').text(response.tinTuc.noi_dung);
-        },
-        error: function(xhr) {
-            Swal.fire("Lỗi!", "Không thể cập nhật tin tức!", "error");
-        }
+                let row = $('#tinTuc_' + id);
+                row.find('td:eq(1)').text(response.tinTuc.tieu_de);
+                row.find('td:eq(2)').html('<img src="{{ asset("assets/images/") }}/' + response.tinTuc.hinh_anh + '" width="100">');
+                row.find('td:eq(3)').text(response.tinTuc.noi_dung);
+            },
+            error: function(xhr) {
+                Swal.fire("Lỗi!", "Không thể cập nhật tin tức!", "error");
+            }
+        });
     });
-});
 
-
-    // Xử lý xóa tin tức
+    // Xóa tin tức
     function xoaTinTuc(id) {
         Swal.fire({
             title: 'Bạn có chắc chắn muốn xóa tin tức này?',
@@ -228,9 +224,11 @@ $('#formSuaTinTuc').submit(function(event) {
                 $.ajax({
                     url: '/admin/tintuc/' + id,
                     type: 'DELETE',
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(response) {
-                        Swal.fire('Xóa thành công!', 'Tin tức đã được xóa.', 'success');
+                        Swal.fire('Đã xóa!', 'Tin tức đã bị xóa.', 'success');
                         $('#tinTuc_' + id).remove();
                     },
                     error: function(xhr) {
@@ -241,5 +239,4 @@ $('#formSuaTinTuc').submit(function(event) {
         });
     }
 </script>
-
 @endsection
