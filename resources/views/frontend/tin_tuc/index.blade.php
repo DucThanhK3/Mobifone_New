@@ -2,9 +2,8 @@
 
 @section('content')
 
-{{-- ✅ Danh sách Tin Tức --}}
 <div class="container py-5">
-    <h1 class="text-center text-primary mb-5 fw-bold">Danh sách Tin Tức</h1>
+    <h1 class="text-center text-primary fw-bold mb-5">🗞️ Bản Tin Mới Nhất</h1>
 
     @if(session('success'))
         <div class="alert alert-success text-center">{{ session('success') }}</div>
@@ -16,19 +15,27 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach($tinTucs as $tinTuc)
         <div class="col">
-            <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden transition-all transform-hover">
+            <div class="card border-0 rounded-4 shadow-sm h-100 overflow-hidden hover-effect">
                 @php
-                    // Kiểm tra nếu có hình ảnh trong CSDL và thiết lập đường dẫn
                     $imagePath = $tinTuc->hinh_anh ? asset('assets/images/' . $tinTuc->hinh_anh) : asset('assets/images/default.jpg');
                 @endphp
-                <img src="{{ $imagePath }}"
-                     alt="{{ $tinTuc->tieu_de }}"
-                     class="img-fluid p-2 transition-transform"
-                     onerror="this.onerror=null; this.src='{{ asset('assets/images/default.jpg') }}';">
-                <div class="card-body">
-                    <h5 class="card-title text-primary fw-bold">{{ $tinTuc->tieu_de ?? 'Không có tiêu đề' }}</h5>
-                    <p class="card-text text-muted small">{{ \Illuminate\Support\Str::limit(strip_tags($tinTuc->content), 150) }}</p>
-                    <a href="{{ route('frontend.tin_tuc.show', $tinTuc->id) }}" class="btn btn-primary w-100 rounded-pill shadow-sm hover-shadow">Xem chi tiết</a>
+
+                <a href="{{ route('frontend.tin_tuc.show', $tinTuc->id) }}">
+                    <img src="{{ $imagePath }}" class="card-img-top img-hover" alt="{{ $tinTuc->tieu_de }}"
+                         style="height: 220px; object-fit: cover;"
+                         onerror="this.onerror=null; this.src='{{ asset('assets/images/default.jpg') }}';">
+                </a>
+
+                <div class="card-body d-flex flex-column">
+                    <p class="text-muted small mb-2">
+                        <i class="bi bi-calendar-event"></i> {{ $tinTuc->created_at->format('d/m/Y') }}
+                    </p>
+                    <h5 class="fw-bold text-dark mb-2">{{ $tinTuc->tieu_de }}</h5>
+                    <p class="card-text text-muted small mb-3">
+                        {{ \Illuminate\Support\Str::limit(strip_tags($tinTuc->content), 100) }}
+                    </p>
+                    <a href="{{ route('frontend.tin_tuc.show', $tinTuc->id) }}"
+                       class="btn btn-outline-primary mt-auto w-100 rounded-pill fw-semibold">Xem chi tiết</a>
                 </div>
             </div>
         </div>
@@ -45,40 +52,44 @@
 
 @push('styles')
     <style>
-        /* Hiệu ứng hover khi card được di chuột vào */
-        .card:hover {
+        .hover-effect:hover {
+            transform: translateY(-6px);
+            transition: 0.3s ease;
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .img-hover {
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .img-hover:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Thêm hiệu ứng cho nút */
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        .card-title {
+            font-size: 1.2rem;
+            color: #222;
         }
 
-        /* Ảnh thay đổi vị trí nhẹ khi hover */
-        .img-fluid {
-            transition: transform 0.3s ease;
-        }
-
-        .img-fluid:hover {
-            transform: scale(1.1); /* Phóng to ảnh khi hover */
-        }
-
-        /* Thêm hiệu ứng khi hover lên card */
-        .transition-all {
+        .btn-outline-primary {
             transition: all 0.3s ease;
+            padding: 10px 25px;
+            font-size: 0.95rem;
+            border-radius: 30px;
         }
 
-        /* Hiệu ứng hover nút */
-        .hover-shadow:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
         }
 
-        /* Thêm hiệu ứng khi hover vào ảnh */
-        .transition-transform {
-            transition: transform 0.3s ease;
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 1140px;
         }
     </style>
 @endpush

@@ -17,6 +17,15 @@ class TinTucController extends Controller
     public function show($id)
     {
         $tinTuc = TinTuc::findOrFail($id);
-        return view('frontend.tin_tuc.show', compact('tinTuc'));
+        
+        
+
+    // Lấy 4 tin khác, loại trừ tin hiện tại
+    $tinKhac = TinTuc::where('id', '!=', $id)
+        ->orderBy('created_at', 'desc')
+        ->take(4)
+        ->get();
+
+    return view('frontend.tin_tuc.show', compact('tinTuc', 'tinKhac'));
     }
 }
