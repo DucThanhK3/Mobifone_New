@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\GoiCuocController as FrontendGoiCuocController
 use App\Http\Controllers\Frontend\DangKyGoiCuocController;
 use App\Http\Controllers\Frontend\TinTucController as FrontendTinTucController;
 
+
 // Trang chính cho khách hàng (frontend)
 Route::get('/', function () {
     return view('frontend.home');
@@ -24,7 +25,8 @@ Route::get('/lich_su_dang_ky', [FrontendGoiCuocController::class, 'lichSu'])->na
 Route::get('/tin-tuc', [FrontendTinTucController::class, 'index'])->name('frontend.tin_tuc.index');
 Route::get('/tin-tuc/{id}', [FrontendTinTucController::class, 'show'])->name('frontend.tin_tuc.show');
 
-// Trang admin chính
+
+
 Route::get('/admin/home', function () {
     return view('admin.home');
 })->name('admin.home');
@@ -55,4 +57,7 @@ Route::prefix('admin')->group(function () {
     // Xóa tin tức
     Route::delete('/admin/tintuc/{id}', [TinTucController::class, 'destroy'])->name('admin.tintuc.destroy');
 });
+
+
+
 

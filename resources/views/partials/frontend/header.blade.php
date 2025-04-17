@@ -12,15 +12,19 @@
         <li><a href="{{ url('/') }}" class="active">Trang chủ</a></li>
         <li><a href="about.html">Giới thiệu</a></li>
         <li class="dropdown">
-    <a href="#"><span>Dịch vụ</span> <i class="bi bi-chevron-down"></i></a>
-    <ul>
-        <li><a href="#">Loại thuê bao</a></li>
-        <li><a href="#">Gói cước</a></li>
-        <li><a href="#">Gói data</a></li>
-        <li><a href="#">Dịch vụ</a></li>
-        <li><a href="#">Đăng ký hòa mạng</a></li>
-        <li><a href="#">Dịch vụ quốc tế</a></li>
-    </ul>
+        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+  <span>Dịch vụ</span> 
+  <i class="bi bi-chevron-down"></i>
+</a>
+<ul class="dropdown-menu">
+  <li><a class="dropdown-item" href="#">Loại thuê bao</a></li>
+  <li><a class="dropdown-item" href="#">Gói cước</a></li>
+  <li><a class="dropdown-item" href="#">Gói data</a></li>
+  <li><a class="dropdown-item" href="#">Dịch vụ</a></li>
+  <li><a class="dropdown-item" href="#">Đăng ký hòa mạng</a></li>
+  <li><a class="dropdown-item" href="#">Dịch vụ quốc tế</a></li>
+</ul>
+
 </li>
 
         <li class="dropdown">
