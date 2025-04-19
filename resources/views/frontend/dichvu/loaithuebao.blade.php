@@ -2,32 +2,22 @@
 
 @section('content')
 <style>
-    /* Điều chỉnh navbar xuống sâu hơn */
     .navbar-nav {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        margin-top: 10000000px; /* Đặt thêm margin-top lớn để di chuyển navbar xuống */
-        position: relative; /* Đảm bảo navbar có thể di chuyển đúng vị trí */
-        z-index: 10; /* Đảm bảo navbar không bị lớp khác che phủ */
+        margin-top: 100px;
+        position: relative;
+        z-index: 10;
     }
 
     .navbar-nav .nav-item {
         margin-right: 20px;
     }
 
-    .navbar-nav .nav-item:last-child {
-        margin-right: 0;
-    }
-
     .navbar-nav .nav-item a {
         padding: 10px 25px;
     }
-
-    /* Điều chỉnh vị trí breadcrumb đã bị loại bỏ */
-    /* .breadcrumb {
-        margin-top: 40px;
-    } */
 
     #myTab {
         margin-top: 30px;
@@ -84,6 +74,26 @@
     .nav-item:hover .dropdown-menu {
         display: block;
     }
+
+    /* Tùy chỉnh bảng mô tả chi tiết */
+    .card-text table {
+        width: 100%;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        border-collapse: collapse;
+    }
+
+    .card-text table th,
+    .card-text table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .card-text table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
 </style>
 
 <div class="container py-4">
@@ -105,13 +115,13 @@
     {{-- Tabs --}}
     <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="trac-truoc-tab" data-bs-toggle="tab" href="#trac-truoc" role="tab">Trả trước</a>
+            <a class="nav-link active fw-bold" id="trac-truoc-tab" data-bs-toggle="tab" href="#trac-truoc" role="tab">Trả trước</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="tra-sau-tab" data-bs-toggle="tab" href="#tra-sau" role="tab">Trả sau</a>
+            <a class="nav-link fw-bold" id="tra-sau-tab" data-bs-toggle="tab" href="#tra-sau" role="tab">Trả sau</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="fast-connect-tab" data-bs-toggle="tab" href="#fast-connect" role="tab">Fast Connect</a>
+            <a class="nav-link fw-bold" id="fast-connect-tab" data-bs-toggle="tab" href="#fast-connect" role="tab">Fast Connect</a>
         </li>
     </ul>
 

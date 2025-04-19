@@ -18,11 +18,29 @@ class GoiCuocLoaiController extends Controller
         // Trả về view với dữ liệu
         return view('frontend.dichvu.loaithuebao', compact('traTruoc', 'traSau', 'fastConnect'));
     }
-    
-    public function show($id)
+
+   public function show($id)
 {
     $goiCuoc = GoiCuocLoai::findOrFail($id);
-    return view('frontend.dichvu.show', compact('goiCuoc'));
+
+    // Lấy một loại thuê bao khác bất kỳ, không phải loại hiện tại
+    $otherLoai = GoiCuocLoai::where('loai_thue_bao', '!=', $goiCuoc->loai_thue_bao)
+        ->inRandomOrder()
+        ->first();
+
+    // Lấy 5 gói cước ngẫu nhiên thuộc loại thuê bao đó
+    $otherGoiCuocList = GoiCuocLoai::where('loai_thue_bao', $otherLoai->loai_thue_bao)
+        ->where('id', '!=', $goiCuoc->id) // loại trừ chính gói hiện tại nếu cùng loại
+        ->inRandomOrder()
+        ->limit(5)
+        ->get();
+
+    return view('frontend.dichvu.show', [
+        'goi' => $goiCuoc,
+        'otherGoiCuocList' => $otherGoiCuocList,
+        'tenLoaiThueBao' => $otherLoai->loai_thue_bao
+    ]);
 }
 
-}
+    
+};

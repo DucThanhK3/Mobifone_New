@@ -36,10 +36,14 @@ Route::get('/tin-tuc/{id}', [FrontendTinTucController::class, 'show'])->name('fr
 
 
 
+// Nhóm loại thuê bao
 Route::prefix('dich-vu/loai-thue-bao')->name('frontend.goicuocloai.')->group(function () {
     Route::get('/', [GoiCuocLoaiController::class, 'index'])->name('index');
     Route::get('/{id}', [GoiCuocLoaiController::class, 'show'])->name('show');
 });
+
+
+
 
 
 
