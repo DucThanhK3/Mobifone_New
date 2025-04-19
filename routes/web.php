@@ -10,6 +10,10 @@ use App\Http\Controllers\Frontend\DangKyGoiCuocController;
 use App\Http\Controllers\Frontend\TinTucController as FrontendTinTucController;
 
 use App\Http\Controllers\Frontend\LoaiThueBaoController;
+use App\Http\Controllers\Frontend\GoiCuocLoaiController;
+
+
+
 
 
 
@@ -28,8 +32,15 @@ Route::get('/lich_su_dang_ky', [FrontendGoiCuocController::class, 'lichSu'])->na
 Route::get('/tin-tuc', [FrontendTinTucController::class, 'index'])->name('frontend.tin_tuc.index');
 Route::get('/tin-tuc/{id}', [FrontendTinTucController::class, 'show'])->name('frontend.tin_tuc.show');
 
-Route::get('/dich-vu', [LoaiThueBaoController::class, 'index'])->name('dichvu.loai_thue_bao.index');
-Route::get('/dich-vu/{loai}', [LoaiThueBaoController::class, 'show'])->name('dichvu.loai_thue_bao.show');
+
+
+
+
+Route::prefix('dich-vu/loai-thue-bao')->name('frontend.goicuocloai.')->group(function () {
+    Route::get('/', [GoiCuocLoaiController::class, 'index'])->name('index');
+    Route::get('/{id}', [GoiCuocLoaiController::class, 'show'])->name('show');
+});
+
 
 
 
