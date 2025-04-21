@@ -13,7 +13,7 @@
         $imagePath = $tinTuc->hinh_anh ? asset('assets/images/' . $tinTuc->hinh_anh) : asset('assets/images/default.jpg');
     @endphp
     <div class="text-center">
-        <img src="{{ $imagePath }}" alt="{{ $tinTuc->tieu_de }}"
+        <img src="{{ $imagePath }}" alt="{{ $tinTuc->tieu_de }} "
              class="img-fluid rounded shadow full-width-image"
              onerror="this.onerror=null; this.src='{{ asset('assets/images/default.jpg') }}';">
     </div>

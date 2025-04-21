@@ -12,7 +12,7 @@
                     <hr>
                     <div class="card-text mb-4">
                         <!-- Mô tả chi tiết gói cước -->
-                        {!! nl2br(e($goi->mo_ta_chi_tiet)) !!}
+                        {!! $goi->mo_ta_chi_tiet !!}
                     </div>
                     <a href="javascript:history.back()" class="btn btn-outline-primary mb-2">← Quay lại</a>
                 </div>
