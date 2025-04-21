@@ -6,7 +6,6 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        margin-top: 100px;
         position: relative;
         z-index: 10;
     }
@@ -75,7 +74,6 @@
         display: block;
     }
 
-    /* Tùy chỉnh bảng mô tả chi tiết */
     .card-text table {
         width: 100%;
         margin-top: 15px;
@@ -94,11 +92,18 @@
         background-color: #f8f9fa;
         font-weight: bold;
     }
+
+    /* Điều chỉnh vị trí các nút bên dưới sidebar */
+    .nav-button-wrapper {
+        margin-top: 150px;
+        display: flex;
+        align-items: center;
+    }
 </style>
 
 <div class="container py-4">
-    {{-- Navbar --}}
-    <div class="mb-4">
+    {{-- Navbar Nút --}}
+    <div class="nav-button-wrapper mb-4">
         <a href="/" class="btn btn-outline-primary mx-2">Trang chủ</a>
         <a href="{{ route('frontend.goicuocloai.index') }}" class="btn btn-outline-primary mx-2">Loại thuê bao</a>
         <a class="btn btn-outline-primary mx-2 dropdown-toggle" id="dichvuDropdown" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dịch vụ</a>
