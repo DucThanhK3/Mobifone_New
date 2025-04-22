@@ -11,6 +11,7 @@ use App\Http\Controllers\Frontend\TinTucController as FrontendTinTucController;
 
 use App\Http\Controllers\Frontend\LoaiThueBaoController;
 use App\Http\Controllers\Frontend\GoiCuocLoaiController;
+use App\Http\Controllers\Frontend\GoiCuocDichVuFrontendController;
 
 
 
@@ -44,7 +45,12 @@ Route::prefix('dich-vu/loai-thue-bao')->name('frontend.goicuocloai.')->group(fun
 
 
 
-
+Route::prefix('dich-vu/dang-ky-goi-cuoc')->name('frontend.goicuocdichvu.')->group(function(){
+    Route::get('/', [GoiCuocDichVuFrontendController::class, 'index'])->name('index');
+    Route::post('/dang-ky', [GoiCuocDichVuFrontendController::class, 'dangKy'])->name('dangky');
+    Route::get('/lich-su', [GoiCuocDichVuFrontendController::class, 'lichSu'])->name('lichsu');
+    Route::delete('/{id}', [GoiCuocDichVuFrontendController::class, 'destroy'])->name('destroy');
+});
 
 
 

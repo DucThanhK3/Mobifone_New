@@ -16,7 +16,8 @@
           <a href="#"><span>Dịch vụ</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="{{ route('frontend.goicuocloai.index') }}">Loại thuê bao</a></li>
-            <li><a href="#">Gói cước</a></li>
+            <li><a href="{{ route('frontend.goicuocdichvu.index') }}" >Đăng ký gói cước</a> </li>
+
             <li><a href="#">Gói data</a></li>
             <li><a href="#">Dịch vụ</a></li>
             <li><a href="#">Đăng ký hòa mạng</a></li>
