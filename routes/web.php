@@ -18,6 +18,9 @@ use App\Http\Controllers\Frontend\GoiCuocDichVuFrontendController;
 
 
 
+
+
+
 // Trang chính cho khách hàng (frontend)
 Route::get('/', function () {
     return view('frontend.home');
@@ -45,12 +48,11 @@ Route::prefix('dich-vu/loai-thue-bao')->name('frontend.goicuocloai.')->group(fun
 
 
 
-Route::prefix('dich-vu/dang-ky-goi-cuoc')->name('frontend.goicuocdichvu.')->group(function(){
-    Route::get('/', [GoiCuocDichVuFrontendController::class, 'index'])->name('index');
-    Route::post('/dang-ky', [GoiCuocDichVuFrontendController::class, 'dangKy'])->name('dangky');
-    Route::get('/lich-su', [GoiCuocDichVuFrontendController::class, 'lichSu'])->name('lichsu');
-    Route::delete('/{id}', [GoiCuocDichVuFrontendController::class, 'destroy'])->name('destroy');
-});
+Route::get('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'index'])->name('frontend.goicuocdichvu.index');
+
+
+
+
 
 
 
@@ -84,6 +86,8 @@ Route::prefix('admin')->group(function () {
     // Xóa tin tức
     Route::delete('/admin/tintuc/{id}', [TinTucController::class, 'destroy'])->name('admin.tintuc.destroy');
 });
+
+
 
 
 
