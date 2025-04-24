@@ -5,8 +5,10 @@ use App\Http\Controllers\Admin\SoDienThoaiController;
 use App\Http\Controllers\Admin\SimController;
 use App\Http\Controllers\Admin\GoiCuocController;
 use App\Http\Controllers\Admin\TinTucController;
+use App\Http\Controllers\Admin\DangKyGoiCuocController; // ✅ Đúng
+
 use App\Http\Controllers\Frontend\GoiCuocController as FrontendGoiCuocController;
-use App\Http\Controllers\Frontend\DangKyGoiCuocController;
+
 use App\Http\Controllers\Frontend\TinTucController as FrontendTinTucController;
 
 use App\Http\Controllers\Frontend\LoaiThueBaoController;
@@ -85,6 +87,22 @@ Route::prefix('admin')->group(function () {
     
     // Xóa tin tức
     Route::delete('/admin/tintuc/{id}', [TinTucController::class, 'destroy'])->name('admin.tintuc.destroy');
+
+ 
+
+    Route::prefix('admin')->group(function () {
+        // Tạm thời bỏ middleware 'auth:admin' để test route
+        // Route::middleware('auth:admin')->group(function () {
+            // Route cho trang quản lý yêu cầu đăng ký gói cước
+            Route::get('/dang-ky-goi-cuoc', [DangKyGoiCuocController::class, 'index'])->name('admin.dang_ky_goi_cuoc.index');
+            
+            // Route cho chức năng duyệt yêu cầu đăng ký gói cước
+            Route::get('/dang-ky-goi-cuoc/{id}/approve', [DangKyGoiCuocController::class, 'approve'])->name('admin.dang_ky_goi_cuoc.approve');
+        // });
+    });
+    
+    
+
 });
 
 

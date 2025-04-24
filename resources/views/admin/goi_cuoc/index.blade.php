@@ -45,7 +45,7 @@
                     <td>{{ $goiCuoc->cu_phap_dang_ky }}</td>
 
                     <td>
-                        <button class="btn btn-warning btn-sm btn-edit" data-id="{{ $goiCuoc->id }}" data-ten="{{ $goiCuoc->ten_goi }}" data-gia="{{ $goiCuoc->gia }}" data-mo_ta="{{ $goiCuoc->mo_ta }}">
+                        <button class="btn btn-warning btn-sm btn-edit" data-id="{{ $goiCuoc->id }}" data-ten="{{ $goiCuoc->ten_goi }}" data-gia="{{ $goiCuoc->gia }}" data-mo_ta="{{ $goiCuoc->mo_ta }}" data-cu_phap="{{ $goiCuoc->cu_phap_dang_ky }}">
                             <i class="fas fa-edit"></i> Sửa
                         </button>
                         <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $goiCuoc->id }}">
@@ -120,8 +120,8 @@
                         <textarea class="form-control" id="mo_ta_sua" name="mo_ta"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="cu_phap_dang_ky" class="form-label">Cú pháp đăng ký</label>
-                        <input type="text" class="form-control" id="cu_phap_dang_ky" name="cu_phap_dang_ky">
+                        <label for="cu_phap_dang_ky_sua" class="form-label">Cú pháp đăng ký</label>
+                        <input type="text" class="form-control" id="cu_phap_dang_ky_sua" name="cu_phap_dang_ky">
                     </div>
 
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -154,7 +154,7 @@ $(document).ready(function () {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Thêm gói cước vào bảng mà không cần tải lại trang
-                        let newRow = `
+                        let newRow = ` 
                             <tr id="goi_cuoc_${response.goicuoc.id}">
                                 <td>${response.goicuoc.id}</td>
                                 <td>${response.goicuoc.ten_goi}</td>
@@ -163,7 +163,7 @@ $(document).ready(function () {
                                 <td>${response.goicuoc.cu_phap_dang_ky}</td>
 
                                 <td>
-                                    <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}">
+                                    <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}" data-cu_phap="${response.goicuoc.cu_phap_dang_ky}">
                                         <i class="fas fa-edit"></i> Sửa
                                     </button>
                                     <button class="btn btn-danger btn-sm btn-delete" data-id="${response.goicuoc.id}">
@@ -201,76 +201,71 @@ $(document).ready(function () {
                 Swal.fire("Cập nhật thành công!", response.message, "success");
                 $('#modalSua').modal('hide');
                 // Cập nhật thông tin gói cước trong bảng
-                let updatedRow = `
+                let updatedRow = ` 
                     <td>${response.goicuoc.id}</td>
                     <td>${response.goicuoc.ten_goi}</td>
                     <td>${response.goicuoc.gia}</td>
                     <td>${response.goicuoc.mo_ta}</td>
                     <td>${response.goicuoc.cu_phap_dang_ky}</td>
-
                     <td>
-                        <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}">
+                        <button class="btn btn-warning btn-sm btn-edit" data-id="${response.goicuoc.id}" data-ten="${response.goicuoc.ten_goi}" data-gia="${response.goicuoc.gia}" data-mo_ta="${response.goicuoc.mo_ta}" data-cu_phap="${response.goicuoc.cu_phap_dang_ky}">
                             <i class="fas fa-edit"></i> Sửa
                         </button>
                         <button class="btn btn-danger btn-sm btn-delete" data-id="${response.goicuoc.id}">
                             <i class="fas fa-trash"></i> Xóa
                         </button>
-                    </td>`;
-                $('#goi_cuoc_' + response.goicuoc.id).html(updatedRow); // Cập nhật dòng trong bảng
-                $('#formSua')[0].reset(); // Xóa dữ liệu trong form
+                    </td>
+                `;
+
+                $(`#goi_cuoc_${response.goicuoc.id}`).html(updatedRow); // Cập nhật dòng bảng
             },
             error: function (xhr) {
-                Swal.fire("Lỗi!", xhr.responseJSON.message || "Không thể cập nhật gói cước!", "error");
+                Swal.fire("Có lỗi!", "Không thể cập nhật gói cước.", "error");
             }
         });
     });
 
     // Xử lý xóa gói cước
     $(document).on('click', '.btn-delete', function () {
-        var id = $(this).data('id');
+        let id = $(this).data('id');
         Swal.fire({
-            title: "Bạn có chắc chắn muốn xóa?",
-            text: "Hành động này không thể hoàn tác!",
-            icon: "warning",
+            title: 'Bạn chắc chắn muốn xóa?',
+            text: 'Sau khi xóa, bạn sẽ không thể khôi phục lại dữ liệu!',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Xóa",
-            cancelButtonText: "Hủy"
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
                     url: "/admin/goi_cuoc/" + id,
-                    type: "POST",
-                    data: {
-                        _method: "DELETE",
-                        _token: "{{ csrf_token() }}",
-                    },
+                    type: 'DELETE',
                     success: function (response) {
                         Swal.fire("Đã xóa!", response.message, "success");
-                        $("#goi_cuoc_" + id).remove(); // Xóa dòng trong bảng
+                        $(`#goi_cuoc_${id}`).remove(); // Xóa dòng khỏi bảng
                     },
                     error: function () {
-                        Swal.fire("Lỗi!", "Không thể xóa gói cước!", "error");
+                        Swal.fire("Có lỗi!", "Không thể xóa gói cước này.", "error");
                     }
                 });
             }
         });
     });
 
-    // Mở modal sửa
+    // Hiển thị modal sửa khi nhấn vào nút sửa
     $(document).on('click', '.btn-edit', function () {
-        var id = $(this).data('id');
-        var ten = $(this).data('ten');
-        var gia = $(this).data('gia');
-        var mo_ta = $(this).data('mo_ta');
-        var cu_phap_dang_ky = $(this).data('cu_phap_dang_ky');
+        let id = $(this).data('id');
+        let ten = $(this).data('ten');
+        let gia = $(this).data('gia');
+        let mo_ta = $(this).data('mo_ta');
+        let cu_phap = $(this).data('cu_phap');
 
         $('#id_sua').val(id);
-        $('#ten_goi_sua').val(ten); 
+        $('#ten_goi_sua').val(ten);
         $('#gia_sua').val(gia);
         $('#mo_ta_sua').val(mo_ta);
-        $('#cu_phap_dang_ky_sua').val(cu_phap_dang_ky);
+        $('#cu_phap_dang_ky_sua').val(cu_phap);
+
         $('#modalSua').modal('show');
     });
 

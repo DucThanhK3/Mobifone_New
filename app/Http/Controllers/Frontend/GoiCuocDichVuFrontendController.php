@@ -27,29 +27,20 @@ class GoiCuocDichVuFrontendController extends Controller
     public function dangKy(Request $request)
     {
         $request->validate([
-            'so_dien_thoai_id' => 'required|exists:so_dien_thoai,id',
             'goi_cuoc_id' => 'required|exists:goi_cuoc,id',
+            'so_dien_thoai' => 'required|regex:/^(090|093|089|070|079|077|076|078)\d{7}$/',
+            'confirmPhone' => 'required|same:so_dien_thoai',
         ]);
 
-        // Kiểm tra đã đăng ký chưa
-        $daDangKy = DangKyGoiCuoc::where('so_dien_thoai_id', $request->so_dien_thoai_id)
-            ->where('goi_cuoc_id', $request->goi_cuoc_id)
-            ->exists();
-
-        if ($daDangKy) {
-            return redirect()->back()->with('error', 'Số điện thoại đã đăng ký gói này.');
-        }
-
-        // Tạo đăng ký mới với trạng thái 'pending'
         DangKyGoiCuoc::create([
-            'so_dien_thoai_id' => $request->so_dien_thoai_id,
             'goi_cuoc_id' => $request->goi_cuoc_id,
-            'trang_thai' => 'pending',
+            'so_dien_thoai' => $request->so_dien_thoai,
+            'trang_thai' => 'cho_duyet'
         ]);
-
-        return redirect()->back()->with('success', 'Đăng ký gói cước thành công! Chờ admin duyệt.');
+        return back()->with('success', 'Yêu cầu đăng ký đã được gửi. Vui lòng chờ duyệt!');
     }
 
+       
     // Hiển thị lịch sử đăng ký gói cước
     public function lichSu()
     {
