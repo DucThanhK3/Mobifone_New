@@ -230,7 +230,18 @@ h6 {
   padding: 15px 0;
   transition: all 0.5s;
   z-index: 997;
-}
+   /* Giữ header cố định */
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   z-index: 1000; /* Đảm bảo header nằm trên các phần tử khác */
+ }
+ 
+ body {
+   margin-top: 80px; /* Điều chỉnh độ cao margin-top để tránh che khuất nội dung */
+ }
+
 
 .header .logo {
   line-height: 1;
