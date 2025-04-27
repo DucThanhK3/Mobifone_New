@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
@@ -22,7 +23,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('frontend.dashboard');
+            return redirect()->route('frontend.home');
         }
 
         return back()->withErrors(['email' => 'Thông tin đăng nhập không chính xác']);
@@ -41,16 +42,14 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user',  // Phân quyền user
         ]);
 
-        Auth::login($user);
-
-        return redirect()->route('frontend.dashboard');
+        return redirect()->route('frontend.login')->with('success', 'Đăng ký thành công. Vui lòng đăng nhập.');
     }
 
     public function logout()

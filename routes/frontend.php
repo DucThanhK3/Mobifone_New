@@ -32,7 +32,7 @@ Route::get('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class,
 
 // Đăng nhập, đăng ký và đăng xuất cho khách hàng
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('frontend.login');
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login'])->name('frontend.login');
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('frontend.register');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->name('frontend.logout');

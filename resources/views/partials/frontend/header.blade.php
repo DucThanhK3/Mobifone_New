@@ -1,23 +1,33 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-
     <a href="{{ url('/') }}" class="logo d-flex align-items-center">
-      <!-- <img src="assets/img/logo.png" alt=""> -->
       <h1 class="sitename">Mobifone</h1>
     </a>
+
+    {{-- ✅ Khu vực đăng nhập/đăng ký/đăng xuất --}}
+    <div class="auth-links d-flex align-items-center gap-2">
+      @guest
+        <a href="{{ route('frontend.login') }}" class="btn btn-outline-primary btn-sm">Đăng nhập</a>
+        <a href="{{ route('frontend.register') }}" class="btn btn-primary btn-sm">Đăng ký</a>
+      @else
+        <span class="me-2">Xin chào, {{ Auth::user()->name }}</span>
+        <form action="{{ route('frontend.logout') }}" method="POST" style="display: inline;">
+          @csrf
+          <button type="submit" class="btn btn-danger btn-sm">Đăng xuất</button>
+        </form>
+      @endguest
+    </div>
 
     <nav id="navmenu" class="navmenu">
       <ul>
         <li><a href="{{ url('/') }}" class="active">Trang chủ</a></li>
         <li><a href="about.html">Giới thiệu</a></li>
 
-        <!-- ✅ Nút Dịch vụ chỉnh lại đúng -->
         <li class="dropdown">
           <a href="#"><span>Dịch vụ</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
             <li><a href="{{ route('frontend.goicuocloai.index') }}">Loại thuê bao</a></li>
-            <li><a href="{{ route('frontend.goicuocdichvu.index') }}" >Đăng ký gói cước</a> </li>
-
+            <li><a href="{{ route('frontend.goicuocdichvu.index') }}">Đăng ký gói cước</a></li>
             <li><a href="#">Gói data</a></li>
             <li><a href="#">Dịch vụ</a></li>
             <li><a href="#">Đăng ký hòa mạng</a></li>
@@ -25,7 +35,6 @@
           </ul>
         </li>
 
-        <!-- Gói cước -->
         <li class="dropdown">
           <a href="#"><span>Gói cước</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
@@ -36,7 +45,6 @@
         <li><a href="team.html">Đội ngũ</a></li>
         <li><a href="{{ route('frontend.tin_tuc.index') }}">Tin tức</a></li>
 
-        <!-- Khác -->
         <li class="dropdown">
           <a href="#"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
