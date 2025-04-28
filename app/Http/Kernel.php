@@ -32,8 +32,10 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         'isUser' => \App\Http\Middleware\IsUser::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // Các middleware khác bạn tạo sẽ được thêm vào đây
     ];
 }

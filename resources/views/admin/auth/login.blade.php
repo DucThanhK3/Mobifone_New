@@ -18,6 +18,7 @@
                 </div>
             @endif
 
+            {{-- 🛠 Sửa action đúng route admin.login --}}
             <form method="POST" action="{{ route('admin.login') }}">
                 @csrf
                 <div class="form-group">
@@ -32,7 +33,7 @@
                     >
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mt-3">
                     <label for="password">Mật khẩu</label>
                     <input
                         type="password"

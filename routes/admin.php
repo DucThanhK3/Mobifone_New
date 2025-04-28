@@ -1,29 +1,29 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\SoDienThoaiController;
 use App\Http\Controllers\Admin\SimController;
 use App\Http\Controllers\Admin\GoiCuocController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\DangKyGoiCuocController;
-use App\Http\Controllers\Admin\AuthController;
-use Illuminate\Support\Facades\Route;
 
-Route::prefix('admin')->name('admin.')->group(function () {
+// Route cho admin
+Route::prefix('admin')->group(function () {
 
-    // Đăng nhập, đăng ký, đăng xuất admin
-    Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [AuthController::class, 'login']);
-    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    // Login, Register
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');  // 👈 Đặt tên là admin.login
+    Route::post('login', [AuthController::class, 'login'])->name('admin.login.post');     // 👈 Đặt tên cho post login luôn
+    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('admin.register');
+    Route::post('register', [AuthController::class, 'register'])->name('admin.register.post');
+    Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');       // 👈 Đặt tên là admin.logout
 
-    // Các route yêu cầu đăng nhập và là admin
-    Route::middleware(['auth', 'isAdmin'])->group(function () {
-
-        // Trang chủ admin
+    // Các route yêu cầu đăng nhập
+    Route::middleware(['auth:admin', 'isAdmin'])->group(function () {
+        
         Route::get('/home', function () {
             return view('admin.home');
-        })->name('home');
+        })->name('admin.home');
 
         // Quản lý số điện thoại
         Route::resource('so_dien_thoai', SoDienThoaiController::class);
@@ -48,4 +48,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dang-ky-goi-cuoc/{id}/approve', [DangKyGoiCuocController::class, 'approve'])->name('dang_ky_goi_cuoc.approve');
         Route::get('dang-ky-goi-cuoc/{id}/reject', [DangKyGoiCuocController::class, 'reject'])->name('dang_ky_goi_cuoc.reject');
     });
+
 });

@@ -1,39 +1,13 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function showRegisterForm()
-    {
-        return view('admin.auth.register');
-    }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin',  // Phân quyền admin
-        ]);
-
-        Auth::login($user);
-
-        return redirect()->route('admin.home');
-    }
-
     public function showLoginForm()
     {
         return view('admin.auth.login');
@@ -41,21 +15,29 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('admin.home');
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $user = Auth::guard('admin')->user();
+
+            if ($user->is_admin) {
+                return redirect()->intended('/admin/home');
+            } else {
+                Auth::guard('admin')->logout();
+                return back()->withErrors([
+                    'email' => 'Bạn không có quyền truy cập trang quản trị.',
+                ]);
+            }
         }
 
-        return back()->withErrors(['email' => 'Thông tin đăng nhập không chính xác']);
+        return back()->withErrors([
+            'email' => 'Thông tin đăng nhập không chính xác.',
+        ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         return redirect()->route('admin.login');
     }
 }
