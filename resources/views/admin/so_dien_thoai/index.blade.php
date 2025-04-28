@@ -118,7 +118,7 @@ $(document).ready(function () {
         let formData = $(this).serialize(); // Lấy dữ liệu từ form
 
         $.ajax({
-            url: "{{ route('so_dien_thoai.store') }}",
+            url: "{{ route('admin.so_dien_thoai.store') }}",
             type: "POST",
             data: formData,
             success: function (response) {

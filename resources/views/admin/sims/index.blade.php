@@ -139,7 +139,7 @@ $(document).ready(function () {
         let formData = $(this).serialize();
 
         $.ajax({
-            url: "{{ route('sims.store') }}",
+            url: "{{ route('admin.sims.store') }}",
             type: "POST",
             data: formData,
             success: function () {

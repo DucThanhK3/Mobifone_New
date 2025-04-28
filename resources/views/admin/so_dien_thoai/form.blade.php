@@ -2,7 +2,7 @@
 <div class="modal fade" id="modalThem">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('so_dien_thoai.store') }}" method="POST">
+            <form action="{{ route('admin.so_dien_thoai.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5>Thêm Số Điện Thoại</h5>

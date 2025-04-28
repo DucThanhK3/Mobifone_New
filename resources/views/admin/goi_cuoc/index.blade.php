@@ -142,7 +142,7 @@ $(document).ready(function () {
         let formData = $(this).serialize(); // Lấy dữ liệu từ form
 
         $.ajax({
-            url: "{{ route('goi_cuoc.store') }}",
+            url: "{{ route('admin.goi_cuoc.store') }}",
             type: "POST",
             data: formData,
             success: function (response) {

@@ -43,7 +43,7 @@
 
     <!-- Quản lý thuê bao -->
     <li class="nav-item">
-  <a href="{{ route('so_dien_thoai.index') }}" class="nav-link">
+  <a href="{{ route('admin.so_dien_thoai.index') }}" class="nav-link">
     <i class="nav-icon fas fa-users"></i>
     <p> Quản lý số Thuê bao </p>
   </a>
@@ -51,7 +51,7 @@
 
 <!-- Quản lý SIM -->
 <li class="nav-item">
-  <a href="{{ route('sims.index') }}" class="nav-link">
+  <a href="{{ route('admin.sims.index') }}" class="nav-link">
     <i class="nav-icon fas fa-sim-card"></i>
     <p> Quản lý SIM </p>
   </a>
@@ -62,7 +62,7 @@
 
        <!-- Gói cước -->
 <li class="nav-item">
-  <a href="{{ route('goi_cuoc.index') }}" class="nav-link">
+  <a href="{{ route('admin.goi_cuoc.index') }}" class="nav-link">
     <i class="nav-icon fas fa-list"></i>
     <p> Gói cước </p>
   </a>
@@ -78,7 +78,7 @@
 
  <!-- Tin Tức -->
 <li class="nav-item">
-<a href="{{ route('tintuc.index') }}"class="nav-link">
+<a href="{{ route('admin.tintuc.index') }}"class="nav-link">
 
     <i class="nav-icon fas fa-newspaper"></i>
     <p> Tin Tức</p>
