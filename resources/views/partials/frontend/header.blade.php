@@ -1,27 +1,13 @@
 <header id="header" class="header d-flex align-items-center fixed-top">
-  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-    <a href="{{ url('/') }}" class="logo d-flex align-items-center">
+  <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+    <a href="{{ route('frontend.home') }}" class="logo d-flex align-items-center">
       <h1 class="sitename">Mobifone</h1>
     </a>
 
-    {{-- ✅ Khu vực đăng nhập/đăng ký/đăng xuất --}}
-    <div class="auth-links d-flex align-items-center gap-2">
-      @guest
-        <a href="{{ route('frontend.login') }}" class="btn btn-outline-primary btn-sm">Đăng nhập</a>
-        <a href="{{ route('frontend.register') }}" class="btn btn-primary btn-sm">Đăng ký</a>
-      @else
-        <span class="me-2">Xin chào, {{ Auth::user()->name }}</span>
-        <form action="{{ route('frontend.logout') }}" method="POST" style="display: inline;">
-          @csrf
-          <button type="submit" class="btn btn-danger btn-sm">Đăng xuất</button>
-        </form>
-      @endguest
-    </div>
-
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="{{ url('/') }}" class="active">Trang chủ</a></li>
-        <li><a href="about.html">Giới thiệu</a></li>
+        <li><a href="{{ route('frontend.home') }}" class="active">Trang chủ</a></li>
+        <li><a href="{{ url('about') }}">Giới thiệu</a></li>
 
         <li class="dropdown">
           <a href="#"><span>Dịch vụ</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -38,11 +24,12 @@
         <li class="dropdown">
           <a href="#"><span>Gói cước</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
           <ul>
-            <li><a href="{{ url('/goi_cuoc') }}">Danh sách gói cước</a></li>
+            <li><a href="{{ route('frontend.goicuoc') }}">Danh sách gói cước</a></li>
           </ul>
         </li>
 
-        <li><a href="team.html">Đội ngũ</a></li>
+        <li><a href="{{ url('team') }}">Đội ngũ</a></li>
+
         <li><a href="{{ route('frontend.tin_tuc.index') }}">Tin tức</a></li>
 
         <li class="dropdown">
@@ -50,7 +37,7 @@
           <ul>
             <li><a href="#">Ưu đãi đặc biệt</a></li>
             <li class="dropdown">
-              <a href="#"><span>Hỗ trợ khách hàng</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <a href="#"><span>Hỗ trợ khách hàng</span> <i class="bi bi-chevron-right toggle-dropdown"></i></a>
               <ul>
                 <li><a href="#">Tra cứu cước</a></li>
                 <li><a href="#">Hướng dẫn sử dụng</a></li>
@@ -65,7 +52,32 @@
           </ul>
         </li>
 
-        <li><a href="contact.html">Liên hệ</a></li>
+        <li><a href="{{ url('contact') }}">Liên hệ</a></li>
+
+        {{-- Auth Links --}}
+@guest
+  <li class="nav-item">
+    <a href="{{ route('frontend.login') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 me-2">Đăng nhập</a>
+  </li>
+  <li class="nav-item">
+    <a href="{{ route('frontend.register') }}" class="btn btn-primary btn-sm rounded-pill px-3">Đăng ký</a>
+  </li>
+@else
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      Xin chào, {{ Auth::user()->name }}
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="userDropdown">
+      <li>
+        <form action="{{ route('frontend.logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="dropdown-item">Đăng xuất</button>
+        </form>
+      </li>
+    </ul>
+  </li>
+@endguest
+
       </ul>
 
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
