@@ -22,11 +22,14 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
             return redirect()->route('frontend.home');
         }
 
-        return back()->withErrors(['email' => 'Thông tin đăng nhập không chính xác']);
+        return back()->withErrors([
+            'email' => 'Thông tin đăng nhập không chính xác.',
+            'password' => 'Thông tin đăng nhập không chính xác.',
+        ]);
     }
 
     public function showRegisterForm()
@@ -39,14 +42,25 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[a-z]/',      // ít nhất 1 chữ thường
+                'regex:/[A-Z]/',      // ít nhất 1 chữ hoa
+                'regex:/[0-9]/',      // ít nhất 1 số
+                'regex:/[@$!%*?&]/'   // ít nhất 1 ký tự đặc biệt
+            ],
+        ], [
+            'password.regex' => 'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.'
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user',  // Phân quyền user
+            'role' => 'user',
         ]);
 
         return redirect()->route('frontend.login')->with('success', 'Đăng ký thành công. Vui lòng đăng nhập.');
@@ -54,7 +68,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         return redirect()->route('frontend.login');
     }
 }

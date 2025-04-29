@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Admin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        // Các trường khác của người dùng
+        // Các trường khác dành cho admin
     ];
 
     protected $hidden = [

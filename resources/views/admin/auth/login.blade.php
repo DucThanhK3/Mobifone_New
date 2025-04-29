@@ -49,11 +49,7 @@
                 </div>
             </form>
 
-            <div class="text-center mt-3">
-                <p class="mb-0">
-                    Chưa có tài khoản? <a href="{{ route('admin.register') }}">Đăng ký ngay</a>
-                </p>
-            </div>
+            
         </div>
     </div>
 </div>

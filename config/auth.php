@@ -3,7 +3,7 @@
 return [
 
     'defaults' => [
-        'guard' => 'web', // Default là user thường
+        'guard' => 'web', // Default cho user
         'passwords' => 'users',
     ],
 
@@ -15,7 +15,7 @@ return [
 
         'admin' => [
             'driver' => 'session',
-            'provider' => 'users', // Admin cũng xài chung bảng users
+            'provider' => 'admins', // Cập nhật lại provider cho admin
         ],
     ],
 
@@ -23,6 +23,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'admins' => [ // Thêm provider cho admin
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
     ],
 
@@ -36,5 +41,4 @@ return [
     ],
 
     'password_timeout' => 10800,
-
 ];
