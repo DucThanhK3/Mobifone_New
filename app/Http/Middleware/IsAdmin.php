@@ -2,18 +2,22 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
+use Illuminate\Support\Facades\Auth;
 
-class Authenticate extends Middleware
+class IsAdmin
 {
-    protected function redirectTo($request)
+    public function handle($request, Closure $next)
     {
-        if (! $request->expectsJson()) {
-            if ($request->is('admin') || $request->is('admin/*')) {
-                return route('admin.login'); // 👈 nếu đang ở admin, về admin login
-            }
-
-            return route('login'); // 👈 nếu không phải admin, về user login
+        // Kiểm tra nếu user không phải admin
+        if (!Auth::guard('admin')->check() || Auth::guard('admin')->user()->role !== 'admin') {
+            // Đăng xuất và quay về login
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login')->withErrors([
+                'email' => 'Bạn không có quyền truy cập trang quản trị.',
+            ]);
         }
+
+        return $next($request);
     }
 }

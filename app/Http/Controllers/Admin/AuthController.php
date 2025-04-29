@@ -14,26 +14,27 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+{
+    $credentials = $request->only('email', 'password');
 
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $user = Auth::guard('admin')->user();
+    if (Auth::guard('admin')->attempt($credentials)) {
+        $user = Auth::guard('admin')->user();
 
-            if ($user->is_admin) {
-                return redirect()->intended('/admin/home');
-            } else {
-                Auth::guard('admin')->logout();
-                return back()->withErrors([
-                    'email' => 'Bạn không có quyền truy cập trang quản trị.',
-                ]);
-            }
+        if ($user->role === 'admin') { // 👈 kiểm tra role thay vì is_admin
+            return redirect()->intended('/admin/home');
+        } else {
+            Auth::guard('admin')->logout();
+            return back()->withErrors([
+                'email' => 'Bạn không có quyền truy cập trang quản trị.',
+            ]);
         }
-
-        return back()->withErrors([
-            'email' => 'Thông tin đăng nhập không chính xác.',
-        ]);
     }
+
+    return back()->withErrors([
+        'email' => 'Thông tin đăng nhập không chính xác.',
+    ]);
+}
+
 
     public function logout(Request $request)
     {

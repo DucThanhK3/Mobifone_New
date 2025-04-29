@@ -14,8 +14,7 @@ Route::prefix('admin')->group(function () {
     // Login, Register
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');  // 👈 Đặt tên là admin.login
     Route::post('login', [AuthController::class, 'login'])->name('admin.login.post');     // 👈 Đặt tên cho post login luôn
-    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('admin.register');
-    Route::post('register', [AuthController::class, 'register'])->name('admin.register.post');
+    
     Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');       // 👈 Đặt tên là admin.logout
 
     // Các route yêu cầu đăng nhập
