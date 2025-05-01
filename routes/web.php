@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\SoDienThoaiController;
 use App\Http\Controllers\Admin\SimController;
 use App\Http\Controllers\Admin\GoiCuocController;
@@ -16,35 +17,26 @@ use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
 
 // ========== ADMIN ROUTES ========== 
 Route::prefix('admin')->group(function () {
-    // Login, Register
-    Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login');
+    // Login, Logout routes
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('admin.login.get');
     Route::post('login', [AuthController::class, 'login'])->name('admin.login.post');
-    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('admin.register');
-    Route::post('register', [AuthController::class, 'register'])->name('admin.register.post');
     Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
 
-    // Các route yêu cầu đăng nhập
-    Route::middleware(['auth:admin', 'isAdmin'])->group(function () {
-        Route::get('/home', function () {
-            return view('admin.home');
-        })->name('admin.home');
+    // Protected routes
+    Route::middleware(['auth:admin'])->group(function () {
+        Route::get('/home', [AdminController::class, 'index'])->name('admin.home');
 
         Route::resource('so_dien_thoai', SoDienThoaiController::class);
-        Route::put('so_dien_thoai/{id}', [SoDienThoaiController::class, 'update'])->name('so_dien_thoai.update');
-        Route::delete('so_dien_thoai/{id}', [SoDienThoaiController::class, 'destroy'])->name('so_dien_thoai.destroy');
-
+        Route::post('so_dien_thoai', [SoDienThoaiController::class, 'store'])->name('admin.so_dien_thoai.store');
         Route::resource('sims', SimController::class);
-        Route::put('sims/{so_id}', [SimController::class, 'update'])->name('sims.update');
-
+        Route::post('sims', [SimController::class, 'store'])->name('admin.sims.store');
         Route::resource('goi_cuoc', GoiCuocController::class);
-
+        Route::post('goi_cuoc', [GoiCuocController::class, 'store'])->name('admin.goi_cuoc.store');
         Route::resource('tintuc', TinTucController::class);
-        Route::post('tintuc', [TinTucController::class, 'store'])->name('tintuc.store');
-        Route::put('tintuc/{id}', [TinTucController::class, 'update'])->name('tintuc.update');
-        Route::delete('tintuc/{id}', [TinTucController::class, 'destroy'])->name('tintuc.destroy');
+        Route::post('tintuc', [TinTucController::class, 'store'])->name('admin.tintuc.store');
 
         Route::get('dang-ky-goi-cuoc', [DangKyGoiCuocController::class, 'index'])->name('dang_ky_goi_cuoc.index');
-        Route::get('dang-ky-goi-cuoc/{id}/approve', [DangKyGoiCuocController::class, 'approve'])->name('dang_ky_goi_cuoc.approve');
+        Route::post('dang-ky-goi-cuoc/approve/{id}', [DangKyGoiCuocController::class, 'approve'])->name('admin.dang_ky_goi_cuoc.approve');
         Route::get('dang-ky-goi-cuoc/{id}/reject', [DangKyGoiCuocController::class, 'reject'])->name('dang_ky_goi_cuoc.reject');
     });
 });
@@ -55,12 +47,6 @@ Route::get('/', function () {
 })->name('frontend.home');
 
 Route::get('/goi_cuoc', [FrontendGoiCuocController::class, 'index'])->name('frontend.goicuoc');
-Route::post('/dang_ky_goi_cuoc', [FrontendGoiCuocController::class, 'dangKy'])->name('frontend.dangky');
-
-// Các route yêu cầu khách hàng đăng nhập
-Route::middleware(['auth:web'])->group(function () {
-    Route::get('/lich_su_dang_ky', [FrontendGoiCuocController::class, 'lichSu'])->name('frontend.lichsu');
-});
 
 Route::get('/tin-tuc', [FrontendTinTucController::class, 'index'])->name('frontend.tin_tuc.index');
 Route::get('/tin-tuc/{id}', [FrontendTinTucController::class, 'show'])->name('frontend.tin_tuc.show');
@@ -70,17 +56,25 @@ Route::prefix('dich-vu/loai-thue-bao')->name('frontend.goicuocloai.')->group(fun
     Route::get('/{id}', [GoiCuocLoaiController::class, 'show'])->name('show');
 });
 
-Route::get('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'index'])->name('frontend.goicuocdichvu.index');
+// Các route yêu cầu khách hàng đăng nhập 
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/lich_su_dang_ky', [FrontendGoiCuocController::class, 'lichSu'])->name('frontend.lichsu');
+    Route::post('/dang_ky_goi_cuoc', [FrontendGoiCuocController::class, 'dangKy'])->name('frontend.dangky');
+    Route::get('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'index'])->name('frontend.goicuocdichvu.index');
+});
 
-// ========== KHÁCH HÀNG AUTH ROUTES ==========
-// Đăng nhập, đăng ký, và đăng xuất cho khách hàng
-Route::get('login', [FrontendAuthController::class, 'showLoginForm'])->name('frontend.login');
-Route::post('login', [FrontendAuthController::class, 'login'])->name('frontend.login.post');
-Route::get('register', [FrontendAuthController::class, 'showRegisterForm'])->name('frontend.register');
-Route::post('register', [FrontendAuthController::class, 'register'])->name('frontend.register.post');
-Route::post('logout', [FrontendAuthController::class, 'logout'])->name('frontend.logout');
+// ========== KHÁCH HÀNG AUTH ROUTES ========== 
+Route::prefix('khach-hang')->name('frontend.')->group(function () {
+    Route::get('dang-nhap', [FrontendAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('dang-nhap', [FrontendAuthController::class, 'login'])->name('login.post');
 
-// Fallback route để Laravel không báo lỗi khi gọi route('login')
+    Route::get('dang-ky', [FrontendAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('dang-ky', [FrontendAuthController::class, 'register'])->name('register.post');
+
+    Route::post('dang-xuat', [FrontendAuthController::class, 'logout'])->name('logout');
+});
+
+// Fallback route để không lỗi khi dùng route('login')
 Route::get('/login', function () {
     return redirect()->route('frontend.login');
 })->name('frontend.login.fallback');

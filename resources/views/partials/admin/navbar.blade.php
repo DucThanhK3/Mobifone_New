@@ -21,7 +21,7 @@
         @if (Auth::guard('admin')->guest())
             <!-- Nếu chưa đăng nhập admin -->
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.login') }}">
+                <a class="nav-link" href="{{ route('admin.login.post') }}">
                     <i class="fas fa-sign-in-alt"></i> Đăng nhập
                 </a>
             </li>
