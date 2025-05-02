@@ -20,27 +20,33 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        Log::info('Login attempt', ['credentials' => $credentials]);
+        Log::info('Admin login attempt', ['email' => $credentials['email']]);
 
         // Kiểm tra đăng nhập với guard 'admin'
         if (Auth::guard('admin')->attempt($credentials)) {
-            $user = Auth::guard('admin')->user();
-            Log::info('Login successful', ['user' => $user->toArray()]);
+            $admin = Auth::guard('admin')->user();
+            Log::info('Admin login successful', ['admin' => $admin->toArray()]);
 
             $ip_address = $request->ip();
             $user_agent = $request->header('User-Agent');
             $token = bin2hex(random_bytes(32));
 
             // Lưu session vào bảng AdminSession
-            $session = AdminSession::create([
-                'id' => $token,
-                'admin_id' => $user->id,
-                'ip_address' => $ip_address,
-                'user_agent' => $user_agent,
-                'last_activity' => now()->timestamp,
-                'token' => $token,
-            ]);
-            Log::info('Session created', ['session' => $session->toArray()]);
+            try {
+                $session = AdminSession::create([
+                    'id' => $token,
+                    'admin_id' => $admin->id,
+                    'ip_address' => $ip_address,
+                    'user_agent' => $user_agent,
+                    'last_activity' => now()->timestamp,
+                    'token' => $token,
+                ]);
+                Log::info('Admin session created', ['session' => $session->toArray()]);
+            } catch (\Exception $e) {
+                Log::error('Failed to create admin session', ['error' => $e->getMessage()]);
+                Auth::guard('admin')->logout();
+                return back()->withErrors(['email' => 'Lỗi hệ thống khi tạo session.']);
+            }
 
             // Lưu token vào session
             session(['admin_token' => $token]);
@@ -49,7 +55,7 @@ class AuthController extends Controller
             return redirect()->intended('/admin/home');
         }
 
-        Log::warning('Login failed', ['credentials' => $credentials]);
+        Log::warning('Admin login failed', ['email' => $credentials['email']]);
         return back()->withErrors([
             'email' => 'Thông tin đăng nhập không chính xác.',
         ])->withInput();
@@ -61,6 +67,7 @@ class AuthController extends Controller
         $token = session('admin_token');
         if ($token) {
             AdminSession::where('token', $token)->delete();
+            Log::info('Admin session deleted', ['token' => $token]);
         }
 
         Auth::guard('admin')->logout();

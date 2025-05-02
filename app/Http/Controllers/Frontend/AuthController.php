@@ -22,7 +22,25 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Kiểm tra đăng nhập với guard 'web'
         if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
+            return redirect()->route('frontend.home');
+        }
+
+        // Nếu đăng nhập thất bại, kiểm tra xem có phải admin không
+        $admin = \App\Models\Admin::where('email', $request->email)->first();
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            // Nếu là admin, tạo tài khoản user tương ứng nếu chưa có
+            $user = User::firstOrCreate(
+                ['email' => $admin->email],
+                [
+                    'name' => $admin->name,
+                    'password' => $admin->password,
+                    'role' => 'admin',
+                ]
+            );
+
+            Auth::guard('web')->login($user);
             return redirect()->route('frontend.home');
         }
 
@@ -47,10 +65,10 @@ class AuthController extends Controller
                 'string',
                 'min:8',
                 'confirmed',
-                'regex:/[a-z]/',      // ít nhất 1 chữ thường
-                'regex:/[A-Z]/',      // ít nhất 1 chữ hoa
-                'regex:/[0-9]/',      // ít nhất 1 số
-                'regex:/[@$!%*?&]/'   // ít nhất 1 ký tự đặc biệt
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&]/'
             ],
         ], [
             'password.regex' => 'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.'

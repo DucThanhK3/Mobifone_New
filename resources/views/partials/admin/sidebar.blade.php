@@ -8,15 +8,19 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <!-- Sidebar user panel -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      <div class="image">
-        <img src="dist/img/thanh.jpg" class="img-circle elevation-2" alt="User Image">
-      </div>
-      <div class="info">
-        <a href="#" class="d-block">Lê Minh Đức Thành</a>
-      </div>
+  <!-- Sidebar user panel -->
+  <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+    <div class="image">
+      <img src="{{ asset('assets/images/' . (Auth::guard('admin')->user()->avatar ?? 'avatars/default.png')) }}"
+           class="img-circle elevation-2" alt="User Image">
     </div>
+    <div class="info">
+      <a href="#" class="d-block">{{ Auth::guard('admin')->user()->name }}</a>
+    </div>
+  </div>
+
+
+
 
     <!-- Sidebar Search Form -->
     <div class="form-inline">
@@ -128,13 +132,18 @@
         </li>
 
 
-        <!-- Đăng xuất -->
-        <li class="nav-item">
-          <a href="logout.html" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt"></i>
-            <p> Đăng xuất </p>
-          </a>
-        </li>
+       <!-- Đăng xuất -->
+<li class="nav-item">
+  <a href="#" class="nav-link"
+     onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();">
+    <i class="nav-icon fas fa-sign-out-alt"></i>
+    <p> Đăng xuất </p>
+  </a>
+  <form id="sidebar-logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+    @csrf
+  </form>
+</li>
+
       </ul>
     </nav>
   </div>

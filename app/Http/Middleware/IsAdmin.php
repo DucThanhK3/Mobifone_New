@@ -13,6 +13,6 @@ class IsAdmin
         if (Auth::guard('admin')->check()) {
             return $next($request);
         }
-        return redirect()->route('admin.login')->with('error', 'Bạn không có quyền truy cập.');
+        return redirect()->route('admin.login.get')->with('error', 'Bạn không có quyền truy cập.');
     }
 }
