@@ -11,6 +11,7 @@ use App\Mail\GoiCuocDuyetMail; // Tạo Mail theo yêu cầu của bạn
 
 class GoiCuocController extends Controller
 {
+    
     // ✅ Hiển thị danh sách gói cước
     public function index()
     {
@@ -112,4 +113,5 @@ class GoiCuocController extends Controller
 
         return redirect()->back()->with('success', 'Đăng ký gói cước đã bị từ chối.');
     }
+    
 }

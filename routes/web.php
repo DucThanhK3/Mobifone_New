@@ -35,9 +35,11 @@ Route::prefix('admin')->group(function () {
         Route::resource('tintuc', TinTucController::class);
         Route::post('tintuc', [TinTucController::class, 'store'])->name('admin.tintuc.store');
 
-        Route::get('dang-ky-goi-cuoc', [DangKyGoiCuocController::class, 'index'])->name('dang_ky_goi_cuoc.index');
-        Route::post('dang-ky-goi-cuoc/approve/{id}', [DangKyGoiCuocController::class, 'approve'])->name('admin.dang_ky_goi_cuoc.approve');
-        Route::get('dang-ky-goi-cuoc/{id}/reject', [DangKyGoiCuocController::class, 'reject'])->name('dang_ky_goi_cuoc.reject');
+        Route::get('/admin/dang-ky-goi-cuoc', [GoiCuocController::class, 'danhSachDangKyChoDuyet'])->name('admin.dangkygoicuoc.index');
+
+
+        Route::post('dang-ky-goi-cuoc/approve/{id}', [App\Http\Controllers\Admin\GoiCuocController::class, 'approve'])->name('admin.dangkygoicuoc.approve');
+        Route::post('dang-ky-goi-cuoc/reject/{id}', [App\Http\Controllers\Admin\GoiCuocController::class, 'reject'])->name('admin.dangkygoicuoc.reject');
     });
 });
 
@@ -58,9 +60,9 @@ Route::prefix('dich-vu/loai-thue-bao')->name('frontend.goicuocloai.')->group(fun
 
 // Các route yêu cầu khách hàng đăng nhập 
 Route::middleware(['auth:web'])->group(function () {
-    Route::get('/lich_su_dang_ky', [FrontendGoiCuocController::class, 'lichSu'])->name('frontend.lichsu');
-    Route::post('/dang_ky_goi_cuoc', [FrontendGoiCuocController::class, 'dangKy'])->name('frontend.dangky');
+    Route::get('/lich_su_dang_ky', [GoiCuocDichVuFrontendController::class, 'lichSu'])->name('frontend.lichsu');
     Route::get('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'index'])->name('frontend.goicuocdichvu.index');
+    Route::post('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'dangKy'])->name('frontend.goicuocdichvu.dangky');
 });
 
 // ========== KHÁCH HÀNG AUTH ROUTES ========== 

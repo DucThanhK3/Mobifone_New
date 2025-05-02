@@ -47,4 +47,5 @@ class DangKyGoiCuocController extends Controller
 
         return redirect()->route('admin.dang_ky_goi_cuoc.index')->with('error', 'Đăng ký gói cước bị từ chối!');
     }
+    
 }

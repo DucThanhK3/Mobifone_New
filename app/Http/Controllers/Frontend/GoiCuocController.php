@@ -1,68 +1,35 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\GoiCuoc;
-use App\Models\SoDienThoai;
 use App\Models\DangKyGoiCuoc;
+use Illuminate\Http\Request;
 
 class GoiCuocController extends Controller
 {
     public function index()
     {
-        $goiCuocs = GoiCuoc::all();
-        $soDienThoaiMacDinh = SoDienThoai::first(); // giả lập
-
-        $goiDaDangKy = DangKyGoiCuoc::where('so_dien_thoai_id', $soDienThoaiMacDinh->id)
-            ->pluck('goi_cuoc_id')
-            ->toArray();
-
-
-
-        return view('frontend.goicuoc.index', compact('goiCuocs', 'soDienThoaiMacDinh', 'goiDaDangKy'));
+        $dangKyGoiCuocs = DangKyGoiCuoc::with('goiCuoc', 'soDienThoai')->get();
+        return view('admin.dangkygoicuoc.index', compact('dangKyGoiCuocs'));
     }
 
-    public function dangKy(Request $request)
-    {
-        $request->validate([
-            'so_dien_thoai_id' => 'required|exists:so_dien_thoai,id',
-            'goi_cuoc_id' => 'required|exists:goi_cuoc,id',
-        ]);
-
-        $tonTai = DangKyGoiCuoc::where('so_dien_thoai_id', $request->so_dien_thoai_id)
-            ->where('goi_cuoc_id', $request->goi_cuoc_id)
-            ->exists();
-
-        if ($tonTai) {
-            return redirect()->back()->with('error', 'Số điện thoại đã đăng ký gói này.');
-        }
-
-        DangKyGoiCuoc::create([
-            'so_dien_thoai_id' => $request->so_dien_thoai_id,
-            'goi_cuoc_id' => $request->goi_cuoc_id,
-        ]);
-
-        return redirect()->back()->with('success', 'Đăng ký thành công!');
-    }
-
-    public function lichSu()
-    {
-        $so = SoDienThoai::first();
-        $dangKys = DangKyGoiCuoc::with('goiCuoc')->where('so_dien_thoai_id', $so->id)->get();
-
-        return view('frontend.goicuoc.lichsu', compact('dangKys', 'so'));
-    }
-
-    
-    public function destroy($id)
+    public function approve(Request $request, $id)
     {
         $dangKy = DangKyGoiCuoc::findOrFail($id);
-        $dangKy->delete();
-    
-        return redirect()->route('frontend.lichsu')->with('success', 'Hủy đăng ký thành công!');
+        $dangKy->update([
+            'trang_thai' => 'da_duyet',
+        ]);
+        return redirect()->route('admin.dangkygoicuoc.index')->with('success', 'Đăng ký đã được duyệt!');
     }
-    
 
+    public function reject(Request $request, $id)
+    {
+        $dangKy = DangKyGoiCuoc::findOrFail($id);
+        $dangKy->update([
+            'trang_thai' => 'tu_choi',
+            'ly_do_tu_choi' => $request->input('ly_do_tu_choi', 'Không có lý do'),
+        ]);
+        return redirect()->route('admin.dangkygoicuoc.index')->with('success', 'Đăng ký đã bị từ chối!');
+    }
 }

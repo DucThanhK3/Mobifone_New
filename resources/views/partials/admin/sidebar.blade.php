@@ -72,13 +72,14 @@
   </a>
 </li>
 
-<!-- Đăng ký Gói Cước -->
+<!-- Nav Item - Quản lý đăng ký gói cước -->
 <li class="nav-item">
-  <a href="{{ route('dang_ky_goi_cuoc.index') }}" class="nav-link">
-    <i class="nav-icon fas fa-plus-circle"></i>
-    <p> Đăng ký Gói Cước </p>
-  </a>
-</li>
+        <a class="nav-link" href="{{ route('admin.dangkygoicuoc.index') }}">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Đăng ký gói cước</span>
+        </a>
+    </li>
+
 
  <!-- Tin Tức -->
 <li class="nav-item">
