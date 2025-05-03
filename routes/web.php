@@ -35,11 +35,10 @@ Route::prefix('admin')->group(function () {
         Route::resource('tintuc', TinTucController::class);
         Route::post('tintuc', [TinTucController::class, 'store'])->name('admin.tintuc.store');
 
-        Route::get('/admin/dang-ky-goi-cuoc', [GoiCuocController::class, 'danhSachDangKyChoDuyet'])->name('admin.dangkygoicuoc.index');
-
-
-        Route::post('dang-ky-goi-cuoc/approve/{id}', [App\Http\Controllers\Admin\GoiCuocController::class, 'approve'])->name('admin.dangkygoicuoc.approve');
-        Route::post('dang-ky-goi-cuoc/reject/{id}', [App\Http\Controllers\Admin\GoiCuocController::class, 'reject'])->name('admin.dangkygoicuoc.reject');
+        // Duyệt đăng ký gói cước
+        Route::get('dang-ky-goi-cuoc', [DangKyGoiCuocController::class, 'danhSachDangKyChoDuyet'])->name('admin.dangkygoicuoc.index');
+        Route::post('dang-ky-goi-cuoc/approve/{id}', [DangKyGoiCuocController::class, 'approve'])->name('admin.dangkygoicuoc.approve');
+        Route::post('dang-ky-goi-cuoc/reject/{id}', [DangKyGoiCuocController::class, 'reject'])->name('admin.dangkygoicuoc.reject');
     });
 });
 

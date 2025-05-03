@@ -16,22 +16,22 @@ class GoiCuocDichVuFrontendController extends Controller
     {
         $user = Auth::guard('web')->user();
         Log::info('User ID: ' . ($user ? $user->id : 'null')); // Debug
-
+    
         $soDienThoai = SoDienThoai::where('user_id', $user->id)->first();
         Log::info('SoDienThoai: ' . ($soDienThoai ? $soDienThoai->so : 'null')); // Debug
-
+    
         $goiCuocs = GoiCuoc::all();
         Log::info('GoiCuocs count: ' . $goiCuocs->count()); // Debug
-
+    
         $goiDaDangKy = [];
         if ($soDienThoai) {
             $goiDaDangKy = DangKyGoiCuoc::where('so_dien_thoai_id', $soDienThoai->id)
-                ->whereIn('trang_thai', ['cho_duyet', 'da_duyet'])
+                ->whereIn('trang_thai', ['pending', 'approved'])
                 ->pluck('goi_cuoc_id')
                 ->toArray();
         }
         Log::info('GoiDaDangKy: ' . json_encode($goiDaDangKy)); // Debug
-
+    
         return view('frontend.goicuocdichvu.index', compact('goiCuocs', 'soDienThoai', 'goiDaDangKy'));
     }
 
@@ -55,7 +55,7 @@ class GoiCuocDichVuFrontendController extends Controller
         DangKyGoiCuoc::create([
             'goi_cuoc_id' => $request->goi_cuoc_id,
             'so_dien_thoai_id' => $soDienThoai->id,
-            'trang_thai' => 'cho_duyet',
+            'trang_thai' => 'pending',
         ]);
 
         return back()->with('success', 'Yêu cầu đăng ký đã được gửi. Vui lòng chờ duyệt!');
