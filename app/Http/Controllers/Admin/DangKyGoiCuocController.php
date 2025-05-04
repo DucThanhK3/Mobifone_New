@@ -8,6 +8,7 @@ use App\Models\SoDienThoai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\GoiCuocDuyetMail;
+use Illuminate\Support\Facades\Log;
 
 class DangKyGoiCuocController extends Controller
 {
@@ -27,34 +28,60 @@ class DangKyGoiCuocController extends Controller
 
     public function approve($id)
     {
-        $dangKyGoiCuoc = DangKyGoiCuoc::findOrFail($id);
-        if ($dangKyGoiCuoc->trang_thai === 'approved') {
-            return redirect()->back()->with('error', 'Gói cước này đã được duyệt trước đó.');
+        try {
+            $dangKyGoiCuoc = DangKyGoiCuoc::findOrFail($id);
+            if ($dangKyGoiCuoc->trang_thai === 'approved') {
+                return redirect()->back()->with('error', 'Gói cước này đã được duyệt trước đó.');
+            }
+
+            $dangKyGoiCuoc->trang_thai = 'approved';
+            $dangKyGoiCuoc->save();
+
+            // Lấy email người nhận
+            $email = $dangKyGoiCuoc->soDienThoai->user->email ?? $dangKyGoiCuoc->soDienThoai->email;
+            if (!$email) {
+                return redirect()->back()->with('error', 'Không tìm thấy địa chỉ email để gửi thông báo.');
+            }
+
+            // Gửi email sử dụng mailer mặc định hoặc mailer tùy chỉnh
+            $mailer = env('USE_CUSTOM_MAILER', false) ? 'custom_gmail' : 'smtp';
+            Mail::mailer($mailer)->to($email)->send(new GoiCuocDuyetMail($dangKyGoiCuoc, 'emails.thong_bao_duyet'));
+
+            return redirect()->back()->with('success', 'Đăng ký gói cước đã được duyệt và email đã được gửi.');
+        } catch (\Exception $e) {
+            // Ghi log lỗi để dễ debug
+            Log::error('Lỗi khi duyệt gói cước: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi gửi email: ' . $e->getMessage());
         }
-        $dangKyGoiCuoc->trang_thai = 'approved';
-        $dangKyGoiCuoc->save();
-
-        $email = $dangKyGoiCuoc->soDienThoai->user->email ?? $dangKyGoiCuoc->soDienThoai->email;
-        Mail::to($email)->send(new GoiCuocDuyetMail($dangKyGoiCuoc, 'emails.thong_bao_duyet'));
-
-        return redirect()->back()->with('success', 'Đăng ký gói cước đã được duyệt.');
     }
 
     public function reject($id)
     {
-        $dangKyGoiCuoc = DangKyGoiCuoc::findOrFail($id);
+        try {
+            $dangKyGoiCuoc = DangKyGoiCuoc::findOrFail($id);
+            if ($dangKyGoiCuoc->trang_thai !== 'pending') {
+                return redirect()->back()->with('error', 'Không thể từ chối đăng ký này.');
+            }
 
-        if ($dangKyGoiCuoc->trang_thai === 'pending') {
             $dangKyGoiCuoc->trang_thai = 'rejected';
             $dangKyGoiCuoc->save();
 
+            // Lấy email người nhận
             $email = $dangKyGoiCuoc->soDienThoai->user->email ?? $dangKyGoiCuoc->soDienThoai->email;
-            Mail::to($email)->send(new GoiCuocDuyetMail($dangKyGoiCuoc, 'emails.thong_bao_tu_choi'));
+            if (!$email) {
+                return redirect()->back()->with('error', 'Không tìm thấy địa chỉ email để gửi thông báo.');
+            }
 
-            return redirect()->back()->with('success', 'Từ chối đăng ký thành công.');
+            // Gửi email sử dụng mailer mặc định hoặc mailer tùy chỉnh
+            $mailer = env('USE_CUSTOM_MAILER', false) ? 'custom_gmail' : 'smtp';
+            Mail::mailer($mailer)->to($email)->send(new GoiCuocDuyetMail($dangKyGoiCuoc, 'emails.thong_bao_tu_choi'));
+
+            return redirect()->back()->with('success', 'Từ chối đăng ký thành công và email đã được gửi.');
+        } catch (\Exception $e) {
+            // Ghi log lỗi để dễ debug
+            Log::error('Lỗi khi từ chối gói cước: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi gửi email: ' . $e->getMessage());
         }
-
-        return redirect()->back()->with('error', 'Không thể từ chối đăng ký này.');
     }
 
     public function store(Request $request)
