@@ -9,7 +9,7 @@ class SoDienThoai extends Model
 {
     use HasFactory;
     protected $table = 'so_dien_thoai';
-    protected $fillable = ['so', 'chu_so_huu','user_id'];
+    protected $fillable = ['so', 'chu_so_huu','user_id','email'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

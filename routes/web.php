@@ -14,6 +14,10 @@ use App\Http\Controllers\Frontend\LoaiThueBaoController;
 use App\Http\Controllers\Frontend\GoiCuocLoaiController;
 use App\Http\Controllers\Frontend\GoiCuocDichVuFrontendController;
 use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\GoiCuocDuyetMail;
+use App\Models\DangKyGoiCuoc;
+
 
 // ========== ADMIN ROUTES ========== 
 Route::prefix('admin')->group(function () {
@@ -62,6 +66,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/lich_su_dang_ky', [GoiCuocDichVuFrontendController::class, 'lichSu'])->name('frontend.lichsu');
     Route::get('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'index'])->name('frontend.goicuocdichvu.index');
     Route::post('/dich-vu/dang-ky-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'dangKy'])->name('frontend.goicuocdichvu.dangky');
+    Route::post('/dich-vu/huy-goi-cuoc', [GoiCuocDichVuFrontendController::class, 'huyGoiCuoc'])->name('frontend.goicuocdichvu.huy');
 });
 
 // ========== KHÁCH HÀNG AUTH ROUTES ========== 
@@ -78,4 +83,21 @@ Route::prefix('khach-hang')->name('frontend.')->group(function () {
 // Fallback route để không lỗi khi dùng route('login')
 Route::get('/login', function () {
     return redirect()->route('frontend.login');
-})->name('frontend.login.fallback');
+})->name('login');
+
+
+
+Route::get('/test-mail', function () {
+    try {
+        $dangKy = DangKyGoiCuoc::find(13);
+        if (!$dangKy) {
+            \Log::error('DangKyGoiCuoc ID 13 not found');
+            return 'Error: DangKyGoiCuoc not found';
+        }
+        Mail::to('test@example.com')->send(new GoiCuocDuyetMail($dangKy, 'emails.thong_bao_tu_choi'));
+        return 'Email sent!';
+    } catch (\Exception $e) {
+        \Log::error('Failed to send email: ' . $e->getMessage());
+        return 'Error: ' . $e->getMessage();
+    }
+});

@@ -94,4 +94,34 @@ class GoiCuocDichVuFrontendController extends Controller
 
         return back()->with('success', 'Hủy đăng ký thành công!');
     }
+
+    public function huyGoiCuoc(Request $request)
+    {
+        $request->validate([
+            'goi_cuoc_id' => 'required|exists:goi_cuoc,id', // Sửa goi_cuocs thành goi_cuoc
+            'math_answer' => 'required|numeric',
+        ]);
+
+        $user = Auth::guard('web')->user();
+        $soDienThoai = SoDienThoai::where('user_id', $user->id)->first();
+
+        if (!$soDienThoai) {
+            return redirect()->route('frontend.goicuocdichvu.index')->with('error', 'Bạn cần đăng ký số điện thoại trước.');
+        }
+
+        // Kiểm tra xem người dùng đã đăng ký gói cước này chưa
+        $dangKy = DangKyGoiCuoc::where('so_dien_thoai_id', $soDienThoai->id)
+            ->where('goi_cuoc_id', $request->input('goi_cuoc_id'))
+            ->where('trang_thai', 'approved')
+            ->first();
+
+        if (!$dangKy) {
+            return redirect()->route('frontend.goicuocdichvu.index')->with('error', 'Bạn chưa đăng ký gói cước này.');
+        }
+
+        // Xóa bản ghi đăng ký
+        $dangKy->delete();
+
+        return redirect()->route('frontend.goicuocdichvu.index')->with('success', 'Hủy gói cước thành công.');
+    }
 }

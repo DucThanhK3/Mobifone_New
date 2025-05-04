@@ -26,10 +26,12 @@ class Authenticate
     protected function redirectTo($request)
     {
         if (!$request->expectsJson()) {
-            if ($request->is('admin/*')) {
-                return route('admin.login');
-            }
-            return route('frontend.login');
+            // Lưu thông báo vào session
+            session()->flash('error', 'Vui lòng đăng nhập để sử dụng chức năng này.');
+            // Chuyển hướng về trang chủ frontend
+            return route('frontend.home');
         }
+
+        return null;
     }
 }

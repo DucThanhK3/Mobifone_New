@@ -6,3 +6,17 @@
     @include('frontend.about')  {{-- Đưa nội dung vào section --}}
     @include('frontend.feature_section')
 @endsection
+@if (session('error'))
+    <script>
+        Swal.fire({
+            title: 'Thông báo',
+            text: '{{ session('error') }}',
+            icon: 'error',
+            confirmButtonText: 'Đóng'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route('frontend.home') }}';
+            }
+        });
+    </script>
+@endif
